@@ -24,6 +24,7 @@ export default class ProductsAdmin extends React.Component {
             columns: [
                 {
                     name: 'ID',
+                    sortable: true,
                     width: '60px',
                     selector: row => row.id
                 },
@@ -33,15 +34,18 @@ export default class ProductsAdmin extends React.Component {
                 },
                 {
                     name: 'Title',
+                    sortable: true,
                     width: '140px',
                     selector: row => row.title
                 },
                 {
                     name: 'Weight',
+                    sortable: true,
                     selector: row => row.weight
                 },
                 {
                     name: 'Price',
+                    sortable: true,
                     selector: row => row.price
                 },
                 {
@@ -58,6 +62,7 @@ export default class ProductsAdmin extends React.Component {
                 },
                 {
                     name: 'Rating',
+                    sortable: true,
                     width: '80px',
                     selector: row => row.rating
                 },
@@ -188,14 +193,15 @@ export default class ProductsAdmin extends React.Component {
     isEdit() {
         this.setState({ isEdit: !this.state.isEdit });
     }
-    updateProduct = (id, img, title, weight, price, category, rating, sauce, isPopular) => {
+    updateProduct = (id, imageUrl, title, weight, price, category, ingredients,ingredientsAdd,ingredientsExcepts, rating, sauce, isPopular) => {
         for (let i = 0; i < this.state.records.length; i++) {
             if (this.state.records[i].id === id) {
                 const mas = [...this.state.records]
-                mas.splice(i, 1, { id, img, title, weight, price, category, rating, sauce, isPopular })
+                mas.splice(i, 1, { id, imageUrl, title, weight, price, category, ingredients,ingredientsAdd, ingredientsExcepts,rating, sauce, isPopular })
                 this.setState({ records: mas })
             }
         }
+        console.log(this.state.records);
     }
     AddProduct(id_, img, title, model, price, category, description, count, isPopular) {
         this.props.getProducts()

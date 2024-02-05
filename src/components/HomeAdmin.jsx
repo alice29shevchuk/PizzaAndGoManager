@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Nav from './Nav'
 import axios from 'axios'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
 export default function HomeAdmin(props) {
 
     return (
@@ -13,9 +14,10 @@ export default function HomeAdmin(props) {
                         <div style={{ height: 150 }} className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
                             <div>
                                 <h3 className='fs-2'>{props.countProducts}</h3>
-                                <p className='fs-5'>Products</p>
+                                <p className='fs-5'>Pizzas</p>
                             </div>
-                            <i className='bi bi-table p-3 fs-1'></i>
+                            {/* <i className='bi bi-table p-3 fs-1'></i> */}
+                            <FontAwesomeIcon icon={faPizzaSlice} className='p-3 fs-1' />
                         </div>
                     </div>
                 </div>

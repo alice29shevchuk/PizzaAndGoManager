@@ -64,7 +64,7 @@ class CategoriesAdmin extends React.Component {
     }
 
    async addcat(title) {
-        axios.post(`https://localhost:7031/api/ControllerClass/add-category`, {
+        axios.post(`http://alisa000077-001-site1.htempurl.com/api/Category/AddCategory`, {
             "id": 0,
             "title": `${title}`
         }).then(res => {
@@ -77,12 +77,9 @@ class CategoriesAdmin extends React.Component {
         })
     }
     async DeleteById(id) {
-        axios.post(`https://localhost:7031/api/ControllerClass/delete-category`, {
-            "id": id,
-            "title": `test`
-        })
+        axios.delete(`http://alisa000077-001-site1.htempurl.com/api/Category/DeleteCategory?idForDelete=${id}`)
             .then(res => {
-                this.setState({ status: res.data.value['status'] })
+                this.setState({ status: res.data['status'] })
             })
         setTimeout(() => {
             if (this.state.status === 400) {
@@ -103,7 +100,7 @@ class CategoriesAdmin extends React.Component {
             }
         }
         this.setState({ records: newdate })
-        await axios.post(`https://localhost:7031/api/ControllerClass/update-categories`, {
+        await axios.post(`http://alisa000077-001-site1.htempurl.com/api/Category/UpdateCategory`, {
             "id": id,
             "title": `${title}`
         })

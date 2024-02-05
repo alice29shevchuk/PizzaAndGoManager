@@ -39,7 +39,7 @@ export default function AdminPage() {
     // getUsers()
     getProducts()
     getCategories()
-    // getOrders()
+    getOrders()
     // getAdmin()
     // setTimeout(checkAdmin,1);
   }, [])
@@ -73,9 +73,10 @@ export default function AdminPage() {
       })
   }
    async function getOrders(){
-    await axios.get(`https://localhost:7031/api/ControllerClass/get-all-orders`)
+    await axios.get(`http://alisa000077-001-site1.htempurl.com/api/Order/GetOrders`)
       .then(res => {
-        const rest =  res.data.value;
+        const rest =  res.data;
+        console.log(res.data);
         setCountOrders(rest.length)
         setDaataOrders(rest)
         return rest

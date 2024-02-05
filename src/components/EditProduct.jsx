@@ -91,7 +91,7 @@ export default class EditProduct extends React.Component {
                                 <button onClick={this.handleCancelEdit}>Cancel</button>
                         </div>) : null}
                         </div>
-                        
+
                         {this.state.pizza.isPopular == 1 && (
                             <select onChange={(e)=>{this.ChangeISPopular(e.target.value)}}>
                                 <option selected>True</option>
@@ -136,11 +136,12 @@ export default class EditProduct extends React.Component {
     handleSaveNewIngredient = () => {
         if (this.state.newIngredientName.trim() !== '') {
             const newIngredient = { name: this.state.newIngredientName.trim() };
+            this.state.pizza.AddNewIngredient(newIngredient.name);
             this.setState((prevState) => ({
-                pizza: {
-                    ...prevState.pizza,
-                    ingredients: [...prevState.pizza.ingredients, newIngredient],
-                },
+                // pizza: {
+                //     ...prevState.pizza,
+                //     ingredients: [...prevState.pizza.ingredients, newIngredient],
+                // },
                 newIngredientName: '',
                 isAddingNewIngredient: false,
             }));
@@ -201,10 +202,24 @@ export default class EditProduct extends React.Component {
     
     async Editproduct(){
         const json =  this.state.pizza;
+        console.log(json);
         await axios.post(`http://alisa000077-001-site1.htempurl.com/api/Pizza/UpdatePizza`, json)
             .then(res => {
         })
-        // this.props.updateProduct(this.state.id,this.state.img,this.state.title,this.state.weight,this.state.price,this.state.idCat,this.state.rating,this.state.sauce,this.state.isPopular)
+        this.props.updateProduct(
+            this.state.pizza.id,
+            this.state.pizza.imageUrl,
+            this.state.pizza.title,
+            this.state.pizza.weight,
+            this.state.pizza.price,
+            this.state.pizza.category,
+            this.state.pizza.ingredients,
+            this.state.pizza.ingredientsAdd,
+            this.state.pizza.ingredientsExcepts,
+            this.state.pizza.rating,
+            this.state.pizza.sauce,
+            this.state.pizza.isPopular
+            )
         this.props.getProducts()
         this.props.isShow()
     }

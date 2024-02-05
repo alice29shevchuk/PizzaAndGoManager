@@ -12,36 +12,90 @@ export default class OrdersAdmin extends React.Component {
             stateNow: -1,
             idNow: -1,
             idUser: '',
+            numberOfOrder:'',
+            name:'',
+            email:'',
+            orderData:'',
+            phoneNumber:'',
+            totalPrice:0,
+            paymentMethod:'',
+            city:'',
+            department:'',
+            comment:'',
+            isDone:'',
             data: '',
             idproduct: -1,
             columns: [
                 {
                     name: 'ID',
+                    width: '60px',
                     selector: row => row.id
                 },
                 {
-                    name: 'ID User',
+                    name: 'Order Number',
+                    width: '280px',
+                    selector: row => row.numberOfOrder
+                },
+                {
+                    name: 'User ID',
+                    width: '240px',
                     selector: row => row.idUser
                 },
                 {
-                    name: 'Date',
-                    selector: row => row.date
+                    name: 'User Name',
+                    selector: row => row.name
                 },
                 {
-                    name: 'ID Product',
-                    selector: row => row.idProduct
+                    name: 'User Email',
+                    width: '190px',
+                    selector: row => row.email
                 },
                 {
-                    name: 'State Order',
+                    name: 'Order Data',
+                    width: '140px',
+                    selector: row => row.orderData
+                },
+                {
+                    name: 'User Phone Number',
+                    width: '130px',
+                    selector: row => `+${row.phoneNumber}`
+                },
+                {
+                    name: 'Total Price',
+                    width: 'auto',
+                    selector: row => row.totalPrice
+                },
+                {
+                    name: 'Payment Method',
+                    selector: row => row.paymentMethod=='cash'? 'Наличными':'Картой'
+                },
+                {
+                    name: 'City',
+                    width: '100px',
+                    selector: row => row.city
+                },
+                {
+                    name: 'Department',
+                    width: '280px',
+                    selector: row => row.department
+                },
+                {
+                    name: 'Comment on Order',
+                    width: 'auto',
+                    selector: row => row.comment!== '' ? row.comment : '-'
+                },
+                {
+                    name: 'Order State',
+                    width: 'auto',
                     selector: row =>
                         <div>
-                            {row.state == 1 &&
+                            {row.isDone === true &&
                                 <select disabled>
                                     <option selected>Done</option>
                                     <option>Processing</option>
                                 </select>
                             }
-                            {row.state == 0 &&
+                            {row.isDone === false &&
                                 <select disabled>
                                     <option>Done</option>
                                     <option selected>Processing</option>
@@ -51,6 +105,7 @@ export default class OrdersAdmin extends React.Component {
                 },
                 {
                     name: "Action",
+                    width: '180px',
                     cell: row => (
                         <div>
                             <button className='btn btn-primary' onClick={() => {
@@ -76,8 +131,11 @@ export default class OrdersAdmin extends React.Component {
     render() {
         return (
             <div className='px-3'>
-                <Nav Toggle={this.props.Toggle} />
-                <div className='container mt-5'>
+                {/* <Nav Toggle={this.props.Toggle} /> */}
+                <div className='container mt-5 offset-md-2 col-md-10'>
+                    <div className='text-end'>
+                        <input style={{ marginBottom: 0 }} className='inp-admin' type="text" placeholder='Enter query...' onChange={this.handleFilter} />
+                    </div>
                     <DataTable title='Orders' columns={this.state.columns} data={this.state.records} fixedHeader pagination></DataTable>
                     {this.state.isEdit && <EditOrder stateNow={this.state.stateNow} setStateNow={this.setStateNow} edit={this.EditNow} />}
                 </div>
@@ -110,7 +168,7 @@ export default class OrdersAdmin extends React.Component {
     async DeleteById(id) {
         const tempArr = this.state.records.filter((el) => { return el.id != id })
         this.setState({ records: tempArr })
-        await axios.post(`https://localhost:7031/api/ControllerClass/delete-order?id=${id}`)
+        await axios.delete(`http://alisa000077-001-site1.htempurl.com/api/Order/DeleteOrder?idForDelete=${id}`)
             .then(res => {
             })
             this.props.updateOrders()

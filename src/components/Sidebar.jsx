@@ -1,9 +1,11 @@
-import React from 'react'
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
 export default function Sidebar({ChooiceCat}) {
   return (
     <div className='bg-white sidebar p-2'>
         <div className='m-2'>
-            <i className='bi bi-apple me-2 fs-4'></i>
+            <FontAwesomeIcon icon={faPizzaSlice} className='me-2 fs-6' />
             <span className='brand-name fs-6'>Pizza and Go</span>
         </div>
         <hr className='text-dark'></hr>
