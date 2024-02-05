@@ -1,15 +1,15 @@
 export class IngredientsAddItem {
    id:number;
    name:string;
-   idPizza:number;
+   pizzaId:number;
    price:number;
    
 
   
-    constructor(id:number, name:string, idPizza:number,price:number) {
+    constructor(id:number, name:string,price:number,idPizza:number) {
       this.id = id;
       this.name = name;
-      this.idPizza = idPizza;
+      this.pizzaId = idPizza;
       this.price = price;
     }
   }

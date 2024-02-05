@@ -61,6 +61,13 @@ class Pizza
         this.ingredients.push({ id:0, name: title, pizzaId:idPizza });
     }
 
+    AddNewIngredientAdd(title:string, price:number){
+        const id:number = (this.ingredients[this.ingredients.length-1].id+1);
+        const idPizza:number = this.id;      
+        const numericPrice: number = price;
+        this.ingredientsAdd.push({ id:0, name: title,price:numericPrice, pizzaId:idPizza });
+    }
+
     DeleteIngridient(id:number):void{
         this.ingredients = this.ingredients.filter(
             (ingredient) => ingredient.id !== id

@@ -477,14 +477,36 @@ main .addToBucket:hover,
     transition: background-color 0.3s ease;
 }
 
-/* При наведении меняем цвет кнопки */
 .add-ingredient-button:hover {
     background-color: #45a049;
 }
 
-/* Стили для контейнера ингредиентов */
+/* ингрединты список */
 .ingredients-container {
     margin-top: 20px;
+}
+.ingredients-open-close {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.ingredients-open-close label {
+    margin-right: 10px;
+}
+
+.ingredients-open-close button {
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+.ingredients-open-close button:hover {
+    background-color: #2980b9;
 }
 
 /* Стили для каждого ингредиента в списке */
@@ -521,4 +543,27 @@ main .addToBucket:hover,
     background-color: #ddd;
 }
 
-/* Остальные стили, такие как маргины, отступы, цвета и т.д., добавьте по необходимости */
+.custom-list {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .custom-list-item::before {
+    content: "+"; /* Задаем контент для маркера списка */
+    margin-right: 5px; /* Добавляем отступ справа для разделения маркера и текста */
+    font-weight: bold; /* Можно задать полужирное начертание */
+  }
+  .custom-list-minus {
+    list-style-type: none; /* Убираем стандартный маркер списка */
+    padding: 0;
+  }
+
+  .custom-list-item-minus::before {
+    content: "-"; /* Задаем контент для маркера списка */
+    margin-right: 5px; /* Добавляем отступ справа для разделения маркера и текста */
+    font-weight: bold; /* Можно задать полужирное начертание */
+  }
+  .custom-list-item-sauce {
+    list-style-type: circle;
+    padding: 0;
+  }

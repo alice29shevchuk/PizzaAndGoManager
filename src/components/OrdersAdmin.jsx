@@ -23,6 +23,7 @@ export default class OrdersAdmin extends React.Component {
             department:'',
             comment:'',
             isDone:'',
+            productsInOrders:[],
             data: '',
             idproduct: -1,
             columns: [
@@ -51,23 +52,9 @@ export default class OrdersAdmin extends React.Component {
                     selector: row => row.email
                 },
                 {
-                    name: 'Order Data',
-                    width: '140px',
-                    selector: row => row.orderData
-                },
-                {
                     name: 'User Phone Number',
                     width: '130px',
-                    selector: row => `+${row.phoneNumber}`
-                },
-                {
-                    name: 'Total Price',
-                    width: 'auto',
-                    selector: row => row.totalPrice
-                },
-                {
-                    name: 'Payment Method',
-                    selector: row => row.paymentMethod=='cash'? 'Наличными':'Картой'
+                    selector: row => row.phoneNumber.substring(2)
                 },
                 {
                     name: 'City',
@@ -80,9 +67,28 @@ export default class OrdersAdmin extends React.Component {
                     selector: row => row.department
                 },
                 {
+                    name: 'Order Data',
+                    width: '140px',
+                    selector: row => row.orderData
+                },
+                {
+                    name: 'Payment Method',
+                    width: '120px',
+                    selector: row => row.paymentMethod=='cash'? 'Наличными':'Картой'
+                },
+                {
                     name: 'Comment on Order',
-                    width: 'auto',
                     selector: row => row.comment!== '' ? row.comment : '-'
+                },
+                {
+                    name: 'Products',
+                    width: 'auto',
+                    selector: row => this.formatProducts(row.productsInOrders),
+                    grow: 2,
+                },
+                {
+                    name: 'Total Price',
+                    selector: row => `${row.totalPrice} грн.`
                 },
                 {
                     name: 'Order State',
@@ -127,6 +133,8 @@ export default class OrdersAdmin extends React.Component {
         this.EditNow = this.EditNow.bind(this)
         this.DeleteById = this.DeleteById.bind(this)
         this.setStateNow = this.setStateNow.bind(this)
+        this.handleFilter = this.handleFilter.bind(this)
+
     }
     render() {
         return (
@@ -165,6 +173,12 @@ export default class OrdersAdmin extends React.Component {
         }
         this.props.updateOrders()
     }
+    handleFilter(event) {
+        const newDate = this.props.data.filter(row => {
+            return row.phoneNumber.toLowerCase().includes(event.target.value.toLowerCase()) || row.numberOfOrder.toLowerCase().includes(event.target.value.toLowerCase())
+        })
+        this.setState({ records: newDate })
+    }
     async DeleteById(id) {
         const tempArr = this.state.records.filter((el) => { return el.id != id })
         this.setState({ records: tempArr })
@@ -173,4 +187,46 @@ export default class OrdersAdmin extends React.Component {
             })
             this.props.updateOrders()
     }
+    formatProducts(products) {
+        if (!products || products.length === 0) {
+            return 'No products';
+        }
+    
+        return (
+            <div>
+                {products.map(product => (
+                    <ul className="custom-list">
+                        <li key={product.id}>
+                            <strong>{product.title}</strong> ({product.count}x)
+                        </li>
+                        <p>{product.price} грн.</p>
+                        {product.selectedSauce!=='' &&
+                            <ul>
+                                <li className="custom-list-item-sauce">{product.selectedSauce}</li>
+                            </ul>
+                        }               
+                        {product.selectedIngredients && product.selectedIngredients.length > 0 && (
+                        <div>
+                            <ul className="custom-list">
+                                {product.selectedIngredients.map(selectedIngredient => (
+                                <li key={selectedIngredient.id} className="custom-list-item">{selectedIngredient.title}</li>
+                                ))}
+                            </ul>
+                        </div>
+                        )}
+                        {product.excludedIngredients && product.excludedIngredients.length > 0 && (
+                        <div>
+                            <ul className="custom-list-minus">
+                                {product.excludedIngredients.map(excludedIngredient => (
+                                <li key={excludedIngredient.id} className="custom-list-item-minus">{excludedIngredient.title}</li>
+                                ))}
+                            </ul>
+                        </div>
+                        )}
+                    </ul>
+                ))}
+            </div>
+        );
+    }
+    
 }

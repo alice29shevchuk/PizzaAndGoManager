@@ -24,6 +24,13 @@ export default class EditProduct extends React.Component {
             newIngredientName: '', 
             isAddingNewIngredient: false,
             isEditingIngredient:false,
+            isListIngredientsIsOpen:false,
+
+            newIngredientAddName: '', 
+            newIngredientAddPrice: 0, 
+            isAddingNewIngredientAdd: false,
+            isEditingIngredientAdd:false,
+            isListIngredientsAddIsOpen:false,
         }
         this.ChangeCategory = this.ChangeCategory.bind(this)
         this.ChangeISPopular = this.ChangeISPopular.bind(this)
@@ -54,44 +61,68 @@ export default class EditProduct extends React.Component {
                         </select>
                         <input type='text' placeholder='Rating...' value={this.state.pizza.rating} onChange={(e)=> this.setState({rating:e.target.value})}></input>
                         <input type='text' placeholder='Sauce...' value={this.state.pizza.sauce} onChange={(e)=> this.setState({sauce:e.target.value})}></input>
-                        {/* <div>
-                            <label>Ингредиенты: </label>
-                            <button onClick={this.handleAddNewIngredient}>Add New Ingredient</button>
-                            {this.state.pizza.ingredients.map((ingredient,index)=>(
-                                <div style={{display:'flex',justifyContent:'space-between'}}>
-                                    <li key={index}>{ingredient.name}</li>
-                                    <div>
-                                        <button onClick={() => this.handleEditIngredient(index)}>Edit</button>
-                                        <button onClick={() => this.handleDeleteIngredient(index)}>Delete</button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div> */}
                         <div className='ingredients-container'>
-                            <label>Ингредиенты: </label>
-                            <button className='add-ingredient-button' onClick={this.handleAddNewIngredient}>Add New Ingredient</button>
-                            {this.state.pizza.ingredients.map((ingredient, index) => (
-                                <div className='ingredient-item' key={index}>
-                                    <span className='ingredient-name'>{ingredient.name}</span>
-                                    <div className='ingredient-buttons'>
-                                        <button onClick={() => this.handleEditIngredient(index)}>Edit</button>
-                                        <button onClick={() => this.handleDeleteIngredient(index)}>Delete</button>
+                            <div className='ingredients-open-close'>
+                                <label>Ингредиенты: </label>
+                                {!this.state.isListIngredientsIsOpen ? ( 
+                                    <button onClick={this.handleListIngredientsIsOpen}>&#9660;</button>
+                                ):(
+                                    <button onClick={this.handleListIngredientsIsClose}>&#11198;</button>
+                                )
+                                }
+                            </div>
+                            {this.state.isListIngredientsIsOpen && (
+                            <div>
+                                <button className='add-ingredient-button' onClick={this.handleAddNewIngredient}>+</button>
+                                {this.state.pizza.ingredients.map((ingredient, index) => (
+                                    <div className='ingredient-item' key={index}>
+                                        <span className='ingredient-name'>{ingredient.name}</span>
+                                        <div className='ingredient-buttons'>
+                                            <button onClick={() => this.handleEditIngredient(index)}>Edit</button>
+                                            <button onClick={() => this.handleDeleteIngredient(index)}>Delete</button>
+                                        </div>
                                     </div>
+                                ))}
+                                <div>
+                                    {this.state.isAddingNewIngredient || this.state.isEditingIngredient ? (
+                                    <div className='add-new-ingredient'>
+                                        <input type='text' placeholder='Введите название ингредиента...' value={this.state.newIngredientName} onChange={(e) => this.setState({ newIngredientName: e.target.value })} />
+                                        <button onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
+                                            {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
+                                        </button>
+                                        <button onClick={this.handleCancelEdit}>Cancel</button>
+                                    </div>) : null}
                                 </div>
-                            ))}
+                            </div>
+                            )}
                         </div>
-
+                        {/* ingredients-add */}
                         <div>
-                            {this.state.isAddingNewIngredient || this.state.isEditingIngredient ? (
-                            <div className='add-new-ingredient'>
-                                <input type='text' placeholder='Введите название ингредиента...' value={this.state.newIngredientName} onChange={(e) => this.setState({ newIngredientName: e.target.value })} />
-                                <button onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
-                                    {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
-                                </button>
-                                <button onClick={this.handleCancelEdit}>Cancel</button>
-                        </div>) : null}
-                        </div>
+                            <label>Ингредиенты для добавления: </label>
+                            <button className='add-ingredient-button' onClick={this.handleAddNewIngredientAdd}>+</button>
+                                {this.state.pizza.ingredientsAdd.map((ingredient, index) => (
+                                    <div className='ingredient-item' key={index}>
+                                        <span className='ingredient-name'>{ingredient.name}</span>
+                                        <span className='ingredient-price'>{ingredient.price}</span>
+                                        <div className='ingredient-buttons'>
+                                            <button onClick={() => this.handleEditIngredientAdd(index)}>Edit</button>
+                                            <button onClick={() => this.handleDeleteIngredientAdd(index)}>Delete</button>
+                                        </div>
+                                    </div>
+                                ))}
+                                 <div>
+                                    {this.state.isAddingNewIngredientAdd || this.state.isEditingIngredientAdd ? (
+                                    <div className='add-new-ingredient'>
+                                        <input type='text' placeholder='Введите название ингредиента...' value={this.state.newIngredientAddName} onChange={(e) => this.setState({ newIngredientAddName: e.target.value })} />
+                                        <input type='number' placeholder='Введите price ингредиента...' value={this.state.newIngredientAddPrice} onChange={(e) => this.setState({ newIngredientAddPrice: e.target.value })} />
 
+                                        <button onClick={this.state.isEditingIngredientAdd ? this.handleSaveEditedIngredientAdd : this.handleSaveNewIngredientAdd}>
+                                            {this.state.isEditingIngredientAdd ? 'Save Edit' : 'Save New'}
+                                        </button>
+                                        <button onClick={this.handleCancelEditAdd}>Cancel</button>
+                                    </div>) : null}
+                                </div>
+                        </div>
                         {this.state.pizza.isPopular == 1 && (
                             <select onChange={(e)=>{this.ChangeISPopular(e.target.value)}}>
                                 <option selected>True</option>
@@ -127,10 +158,28 @@ export default class EditProduct extends React.Component {
             this.setState({isPopular: 0})
         }
     };
+    handleListIngredientsIsOpen=()=>{
+        this.setState({
+            isListIngredientsIsOpen:true,
+        });
+    };
+    handleListIngredientsIsClose=()=>{
+        this.setState({
+            isListIngredientsIsOpen:false,
+        });
+    };
     handleAddNewIngredient = () => {
         this.setState({
             isAddingNewIngredient: true,
             newIngredientName: '',
+        });
+    };
+
+    handleAddNewIngredientAdd = () => {
+        this.setState({
+            isAddingNewIngredientAdd: true,
+            newIngredientAddName: '',
+            newIngredientAddPrice: 0
         });
     };
     handleSaveNewIngredient = () => {
@@ -149,6 +198,24 @@ export default class EditProduct extends React.Component {
             alert('Please enter the name of the new ingredient before saving.');
         }
     };
+
+    handleSaveNewIngredientAdd = () => {
+        if (this.state.newIngredientAddName.trim() !== '' && this.state.newIngredientAddPrice.trim() !== 0) {
+            const newIngredient = { name: this.state.newIngredientAddName.trim(), price: parseInt(this.state.newIngredientAddPrice) };
+            this.state.pizza.AddNewIngredientAdd(newIngredient.name, newIngredient.price);
+            this.setState((prevState) => ({
+                // pizza: {
+                //     ...prevState.pizza,
+                //     ingredients: [...prevState.pizza.ingredients, newIngredient],
+                // },
+                newIngredientAddName: '',
+                newIngredientAddPrice: 0,
+                isAddingNewIngredientAdd: false,
+            }));
+        } else {
+            alert('Please enter the name of the new ingredient before saving.');
+        }
+    };
     
     handleDeleteIngredient = (index) => {
         const updatedIngredients = [...this.state.pizza.ingredients];
@@ -162,6 +229,19 @@ export default class EditProduct extends React.Component {
         });
         console.log(this.state.pizza.ingredients);
     };
+
+    handleDeleteIngredientAdd = (index) => {
+        const updatedIngredients = [...this.state.pizza.ingredientsAdd];
+        updatedIngredients.splice(index, 1);
+        console.log(updatedIngredients);
+        this.setState({
+            pizza: {
+                ...this.state.pizza,
+                ingredientsAdd: updatedIngredients,
+            },
+        });
+        console.log(this.state.pizza.ingredientsAdd);
+    };
       
       
     handleEditIngredient = (index) => {
@@ -171,6 +251,17 @@ export default class EditProduct extends React.Component {
             isEditingIngredient: true,
             editingIngredientIndex: index,
             newIngredientName: editedIngredient,
+        });
+    };
+
+    handleEditIngredientAdd = (index) => {
+        const editedIngredientName = this.state.pizza.ingredientsAdd[index].name;
+        const editedIngredientPrice = this.state.pizza.ingredientsAdd[index].price;
+        this.setState({
+            isEditingIngredientAdd: true,
+            editingIngredientIndex: index,
+            newIngredientAddName: editedIngredientName,
+            newIngredientAddPrice: editedIngredientPrice
         });
     };
 
@@ -188,12 +279,39 @@ export default class EditProduct extends React.Component {
             editingIngredientIndex: null,
         });
     };
+
+    handleSaveEditedIngredientAdd = () => {
+        const editedIngredients = [...this.state.pizza.ingredientsAdd];
+        editedIngredients[this.state.editingIngredientIndex].name = this.state.newIngredientAddName;
+        editedIngredients[this.state.editingIngredientIndex].price = this.state.newIngredientAddPrice;
+    
+        this.setState({
+            pizza: {
+                ...this.state.pizza,
+                ingredientsAdd: editedIngredients,
+            },
+            isEditingIngredientAdd: false,
+            newIngredientAddName: '',
+            newIngredientAddPrice:0,
+            editingIngredientIndex: null,
+        });
+    };
     
     handleCancelEdit = () => {
         this.setState({
             isEditingIngredient: false,
             isAddingNewIngredient:false,
             newIngredientName: '',
+            editingIngredientIndex: null,
+        });
+    };
+
+    handleCancelEditAdd = () => {
+        this.setState({
+            isEditingIngredientAdd: false,
+            isAddingNewIngredientAdd:false,
+            newIngredientAddName: '',
+            newIngredientAddPrice:0,
             editingIngredientIndex: null,
         });
     };
