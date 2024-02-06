@@ -55,17 +55,24 @@ class Pizza
     }
 
     AddNewIngredient(title:string): void{
-        // const newIng:Ingredient = new Ingredient((this.ingredients[this.ingredients.length-1].id+1),title,this.id);
-        const id:number = (this.ingredients[this.ingredients.length-1].id+1);
+        // const id:number = (this.ingredients[this.ingredients.length-1].id+1);
         const idPizza:number = this.id;
+        console.log(title);
+        
         this.ingredients.push({ id:0, name: title, pizzaId:idPizza });
     }
 
     AddNewIngredientAdd(title:string, price:number){
-        const id:number = (this.ingredients[this.ingredients.length-1].id+1);
+        // const id:number = (this.ingredients[this.ingredients.length-1].id+1);
         const idPizza:number = this.id;      
         const numericPrice: number = price;
         this.ingredientsAdd.push({ id:0, name: title,price:numericPrice, pizzaId:idPizza });
+    }
+
+    AddNewIngredientExcept(title:string): void{
+        // const id:number = (this.ingredients[this.ingredients.length-1].id+1);
+        const idPizza:number = this.id;
+        this.ingredientsExcepts.push({ id:0, name: title, pizzaId:idPizza });
     }
 
     DeleteIngridient(id:number):void{

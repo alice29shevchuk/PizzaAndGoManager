@@ -21,6 +21,7 @@ export default class ProductsAdmin extends React.Component {
             ingredientsAdd:[],
             ingredientsExcept:[],
             popular: 0,
+            // dataCategory:[],
             columns: [
                 {
                     name: 'ID',
@@ -72,7 +73,7 @@ export default class ProductsAdmin extends React.Component {
                     selector: (row) => (
                         <ul>
                           {row.ingredients.map((ingredient) => (
-                            <li key={ingredient.id}>{ingredient.name}</li>
+                            <li key={ingredient.key}>{ingredient.name}</li>
                           ))}
                         </ul>
                     ),
@@ -108,13 +109,13 @@ export default class ProductsAdmin extends React.Component {
                     name: 'Popular',
                     selector: row =>
                         <div>
-                            {row.isPopular == 1 &&
+                            {row.isPopular == true &&
                                 <select disabled>
                                     <option selected>True</option>
                                     <option>False</option>
                                 </select>
                             }
-                            {row.isPopular == 0 &&
+                            {row.isPopular == false &&
                                 <select disabled>
                                     <option>True</option>
                                     <option selected>False</option>
@@ -183,7 +184,7 @@ export default class ProductsAdmin extends React.Component {
     async DeleteById(id) {
         const tempArr = this.state.records.filter((el) => { return el.id != id })
         this.setState({ records: tempArr })
-        await axios.post(`https://localhost:7031/api/ControllerClass/delete-product?id=${id}`)
+        await axios.delete(`http://alisa000077-001-site1.htempurl.com/api/Pizza/DeletePizza?idPizza=${id}`)
             .then(res => {
             })
     }
@@ -203,12 +204,12 @@ export default class ProductsAdmin extends React.Component {
         }
         console.log(this.state.records);
     }
-    AddProduct(id_, img, title, model, price, category, description, count, isPopular) {
+    AddProduct(id_, imageUrl, title, weight, price, category, ingredients,ingredientsAdd,ingredientsExcepts, rating, sauce, isPopular) {
         this.props.getProducts()
         setTimeout(() => {
             const id = this.props.idProductNow
             const mas = [...this.state.records]
-            mas.splice(this.state.records.length, 1, { id, img, title, model, price, category, description, count, isPopular })
+            mas.splice(this.state.records.length, 1, { id, imageUrl, title, weight, price, category, ingredients,ingredientsAdd,ingredientsExcepts, rating, sauce, isPopular })
             this.setState({ records: mas })
         }, 1500)
     }

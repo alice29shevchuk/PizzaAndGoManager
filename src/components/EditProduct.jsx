@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import {Pizza} from '../componentsModel/Pizza'
+import { Ingredient } from '../componentsModel/Ingredient'
+import { IngredientsAddItem } from '../componentsModel/IngredientsAddItem'
+import { IngredientsExcept } from '../componentsModel/IngredientsExcept'
 
 export default class EditProduct extends React.Component {
     constructor(props) {
@@ -21,6 +24,7 @@ export default class EditProduct extends React.Component {
                 this.props.ingredientsExcept,
                 this.props.isPopular
             ),
+            // dataCategory:[],
             newIngredientName: '', 
             isAddingNewIngredient: false,
             isEditingIngredient:false,
@@ -31,6 +35,12 @@ export default class EditProduct extends React.Component {
             isAddingNewIngredientAdd: false,
             isEditingIngredientAdd:false,
             isListIngredientsAddIsOpen:false,
+
+
+            newIngredientExceptName: '', 
+            isAddingNewIngredientExcept: false,
+            isEditingIngredientExcept:false,
+            isListIngredientsExceptIsOpen:false,
         }
         this.ChangeCategory = this.ChangeCategory.bind(this)
         this.ChangeISPopular = this.ChangeISPopular.bind(this)
@@ -51,16 +61,36 @@ export default class EditProduct extends React.Component {
                                     this.setState({img: `https://ishopbucket.s3.eu-west-2.amazonaws.com/${e.target.files[0].name}`})
                                 })
                         }} /> */}
-                        <input type='text' placeholder='Title...' value={this.state.pizza.title} onChange={(e)=> this.setState({title:e.target.value})}></input>
-                        <input type='text' min={200} max={800} placeholder='Weight...' value={this.state.pizza.weight} onChange={(e)=> this.setState({weight:e.target.value})}></input>
-                        <input min={0} type='number' placeholder='Price...' value={this.state.pizza.price} onChange={(e)=> this.setState({price:e.target.value})}></input>
-                        <select onChange={(e) => this.ChangeCategory(e.target.pizza.value)}>
+                        <input type='text' placeholder='Title...' value={this.state.pizza.title} onChange={(e) => this.setState(prevState => ({
+                            pizza: {
+                            ...prevState.pizza,
+                            title: e.target.value
+                        }}))}></input>
+                        <input type='text' min={200} max={800} placeholder='Weight...' value={this.state.pizza.weight} onChange={(e) => this.setState(prevState => ({
+                            pizza: {
+                            ...prevState.pizza,
+                            weight: e.target.value
+                        }}))}></input>
+                        <input min={0} type='number' placeholder='Price...' value={this.state.pizza.price} onChange={(e) => this.setState(prevState => ({
+                            pizza: {
+                            ...prevState.pizza,
+                            price: e.target.value
+                        }}))}></input>
+                        <select onChange={(e) => this.ChangeCategory(e.target.value)}>
                             {this.props.dataCategory.map((el) => (
                                 <option key={el.id} value={el.title} selected={el.id === this.state.pizza.category}>{el.title}</option>
                             ))}
                         </select>
-                        <input type='text' placeholder='Rating...' value={this.state.pizza.rating} onChange={(e)=> this.setState({rating:e.target.value})}></input>
-                        <input type='text' placeholder='Sauce...' value={this.state.pizza.sauce} onChange={(e)=> this.setState({sauce:e.target.value})}></input>
+                        <input type='text' placeholder='Rating...' value={this.state.pizza.rating} onChange={(e) => this.setState(prevState => ({
+                            pizza: {
+                            ...prevState.pizza,
+                            rating: e.target.value
+                        }}))}></input>
+                        <input type='text' placeholder='Sauce...' value={this.state.pizza.sauce} onChange={(e) => this.setState(prevState => ({
+                            pizza: {
+                            ...prevState.pizza,
+                            sauce: e.target.value
+                        }}))}></input>
                         <div className='ingredients-container'>
                             <div className='ingredients-open-close'>
                                 <label>Ингредиенты: </label>
@@ -97,24 +127,34 @@ export default class EditProduct extends React.Component {
                             )}
                         </div>
                         {/* ingredients-add */}
-                        <div>
+                        <div className='ingredients-container'>
+                            <div className='ingredients-open-close'>
                             <label>Ингредиенты для добавления: </label>
-                            <button className='add-ingredient-button' onClick={this.handleAddNewIngredientAdd}>+</button>
-                                {this.state.pizza.ingredientsAdd.map((ingredient, index) => (
-                                    <div className='ingredient-item' key={index}>
-                                        <span className='ingredient-name'>{ingredient.name}</span>
-                                        <span className='ingredient-price'>{ingredient.price}</span>
-                                        <div className='ingredient-buttons'>
-                                            <button onClick={() => this.handleEditIngredientAdd(index)}>Edit</button>
-                                            <button onClick={() => this.handleDeleteIngredientAdd(index)}>Delete</button>
+                                {!this.state.isListIngredientsAddIsOpen ? ( 
+                                    <button onClick={this.handleListIngredientsAddIsOpen}>&#9660;</button>
+                                ):(
+                                    <button onClick={this.handleListIngredientsAddIsClose}>&#11198;</button>
+                                )
+                                }
+                            </div>
+                            {this.state.isListIngredientsAddIsOpen && (
+                            <div>
+                                <button className='add-ingredient-button' onClick={this.handleAddNewIngredientAdd}>+</button>
+                                    {this.state.pizza.ingredientsAdd.map((ingredient, index) => (
+                                        <div className='ingredient-item' key={index}>
+                                            <span className='ingredient-name'>{ingredient.name}</span>
+                                            <span className='ingredient-price'>{ingredient.price}</span>
+                                            <div className='ingredient-buttons'>
+                                                <button onClick={() => this.handleEditIngredientAdd(index)}>Edit</button>
+                                                <button onClick={() => this.handleDeleteIngredientAdd(index)}>Delete</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
                                  <div>
                                     {this.state.isAddingNewIngredientAdd || this.state.isEditingIngredientAdd ? (
                                     <div className='add-new-ingredient'>
-                                        <input type='text' placeholder='Введите название ингредиента...' value={this.state.newIngredientAddName} onChange={(e) => this.setState({ newIngredientAddName: e.target.value })} />
-                                        <input type='number' placeholder='Введите price ингредиента...' value={this.state.newIngredientAddPrice} onChange={(e) => this.setState({ newIngredientAddPrice: e.target.value })} />
+                                        <input type='text' placeholder='Введите название ингредиента для добавления...' value={this.state.newIngredientAddName} onChange={(e) => this.setState({ newIngredientAddName: e.target.value })} />
+                                        <input type='number' placeholder='Введите цену ингредиента для добавления...' value={this.state.newIngredientAddPrice} onChange={(e) => this.setState({ newIngredientAddPrice: e.target.value })} />
 
                                         <button onClick={this.state.isEditingIngredientAdd ? this.handleSaveEditedIngredientAdd : this.handleSaveNewIngredientAdd}>
                                             {this.state.isEditingIngredientAdd ? 'Save Edit' : 'Save New'}
@@ -122,14 +162,55 @@ export default class EditProduct extends React.Component {
                                         <button onClick={this.handleCancelEditAdd}>Cancel</button>
                                     </div>) : null}
                                 </div>
+                            </div>
+                            )}
                         </div>
-                        {this.state.pizza.isPopular == 1 && (
+                        
+                        {/* ingredients-except */}
+                        <div className='ingredients-container'>
+                            <div className='ingredients-open-close'>
+                            <label>Ингредиенты для исключения: </label>
+                                {!this.state.isListIngredientsExceptIsOpen ? ( 
+                                    <button onClick={this.handleListIngredientsExceptIsOpen}>&#9660;</button>
+                                ):(
+                                    <button onClick={this.handleListIngredientsExceptIsClose}>&#11198;</button>
+                                )
+                                }
+                            </div>
+                            {this.state.isListIngredientsExceptIsOpen && (
+                            <div>
+                                <button className='add-ingredient-button' onClick={this.handleAddNewIngredientExcept}>+</button>
+                                    {this.state.pizza.ingredientsExcepts.map((ingredient, index) => (
+                                        <div className='ingredient-item' key={index}>
+                                            <span className='ingredient-name'>{ingredient.name}</span>
+                                            <div className='ingredient-buttons'>
+                                                <button onClick={() => this.handleEditIngredientExcept(index)}>Edit</button>
+                                                <button onClick={() => this.handleDeleteIngredientExcept(index)}>Delete</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                 <div>
+                                    {this.state.isAddingNewIngredientExcept || this.state.isEditingIngredientExcept ? (
+                                    <div className='add-new-ingredient'>
+                                        <input type='text' placeholder='Введите название ингредиента для исключения...' value={this.state.newIngredientExceptName} onChange={(e) => this.setState({ newIngredientExceptName: e.target.value })} />
+
+                                        <button onClick={this.state.isEditingIngredientExcept ? this.handleSaveEditedIngredientExcept : this.handleSaveNewIngredientExcept}>
+                                            {this.state.isEditingIngredientExcept ? 'Save Edit' : 'Save New'}
+                                        </button>
+                                        <button onClick={this.handleCancelEditExcept}>Cancel</button>
+                                    </div>) : null}
+                                </div>
+                            </div>
+                            )}
+                        </div>
+
+                        {this.state.pizza.isPopular == true && (
                             <select onChange={(e)=>{this.ChangeISPopular(e.target.value)}}>
                                 <option selected>True</option>
                                 <option>False</option>
                             </select>
                         )}
-                        {this.state.isPopular == 0 && (
+                        {this.state.pizza.isPopular == false && (
                             <select onChange={(e)=>{this.ChangeISPopular(e.target.value)}}>
                                 <option>True</option>
                                 <option selected>False</option>
@@ -145,19 +226,31 @@ export default class EditProduct extends React.Component {
     ChangeCategory(title){
         for (const iterator of this.props.dataCategory) {
             if(iterator.title === title){
-                this.setState({idCat: iterator.id})
-                console.log(title);
+                this.setState(prevState => ({
+                    pizza: {
+                        ...prevState.pizza,
+                        category: iterator.id
+                    }}))
             }
         }
     }
     ChangeISPopular(text){
         if(text === "True"){
-            this.setState({isPopular: 1})
+            this.setState(prevState => ({
+                pizza: {
+                    ...prevState.pizza,
+                    isPopular: true
+                }}))
         }
         else if( text === "False"){
-            this.setState({isPopular: 0})
+            this.setState(prevState => ({
+                pizza: {
+                    ...prevState.pizza,
+                    isPopular: false
+                }}))
         }
     };
+
     handleListIngredientsIsOpen=()=>{
         this.setState({
             isListIngredientsIsOpen:true,
@@ -166,15 +259,55 @@ export default class EditProduct extends React.Component {
     handleListIngredientsIsClose=()=>{
         this.setState({
             isListIngredientsIsOpen:false,
+            
+            isEditingIngredient: false,
+            isAddingNewIngredient:false,
+            newIngredientName: '',
+            editingIngredientIndex: null,
         });
     };
+
+    
+    handleListIngredientsAddIsOpen=()=>{
+        this.setState({
+            isListIngredientsAddIsOpen:true,
+        });
+    };
+    handleListIngredientsAddIsClose=()=>{
+        this.setState({
+            isListIngredientsAddIsOpen:false,
+
+            isEditingIngredientAdd: false,
+            isAddingNewIngredientAdd:false,
+            newIngredientAddName: '',
+            newIngredientAddPrice:0,
+            editingIngredientIndex: null,
+        });
+    };
+
+    handleListIngredientsExceptIsOpen=()=>{
+        this.setState({
+            isListIngredientsExceptIsOpen:true,
+        });
+    };
+    handleListIngredientsExceptIsClose=()=>{
+        this.setState({
+            isListIngredientsExceptIsOpen:false,
+            
+            isEditingIngredientExcept: false,
+            isAddingNewIngredientExcept:false,
+            newIngredientExceptName: '',
+            editingIngredientIndex: null,
+        });
+    };
+
+
     handleAddNewIngredient = () => {
         this.setState({
             isAddingNewIngredient: true,
             newIngredientName: '',
         });
     };
-
     handleAddNewIngredientAdd = () => {
         this.setState({
             isAddingNewIngredientAdd: true,
@@ -182,27 +315,36 @@ export default class EditProduct extends React.Component {
             newIngredientAddPrice: 0
         });
     };
+    handleAddNewIngredientExcept = () => {
+        this.setState({
+            isAddingNewIngredientExcept: true,
+            newIngredientExceptName: '',
+        });
+    };
+
     handleSaveNewIngredient = () => {
         if (this.state.newIngredientName.trim() !== '') {
             const newIngredient = { name: this.state.newIngredientName.trim() };
-            this.state.pizza.AddNewIngredient(newIngredient.name);
+            this.state.pizza.ingredients = [...this.state.pizza.ingredients,new Ingredient(0, newIngredient.name, this.state.pizza.id)];
             this.setState((prevState) => ({
                 // pizza: {
-                //     ...prevState.pizza,
-                //     ingredients: [...prevState.pizza.ingredients, newIngredient],
+                //     ...prevState.pizza.AddNewIngredient(newIngredient.name),
+                //     // ingredients: [...prevState.pizza.ingredients, newIngredient],
                 // },
                 newIngredientName: '',
                 isAddingNewIngredient: false,
             }));
+            // this.state.pizza.AddNewIngredient(newIngredient.name);
+
         } else {
             alert('Please enter the name of the new ingredient before saving.');
         }
     };
-
     handleSaveNewIngredientAdd = () => {
         if (this.state.newIngredientAddName.trim() !== '' && this.state.newIngredientAddPrice.trim() !== 0) {
             const newIngredient = { name: this.state.newIngredientAddName.trim(), price: parseInt(this.state.newIngredientAddPrice) };
-            this.state.pizza.AddNewIngredientAdd(newIngredient.name, newIngredient.price);
+            // this.state.pizza.AddNewIngredientAdd(newIngredient.name, newIngredient.price);
+            this.state.pizza.ingredientsAdd = [...this.state.pizza.ingredientsAdd,new IngredientsAddItem(0, newIngredient.name,newIngredient.price, this.state.pizza.id)];
             this.setState((prevState) => ({
                 // pizza: {
                 //     ...prevState.pizza,
@@ -211,6 +353,19 @@ export default class EditProduct extends React.Component {
                 newIngredientAddName: '',
                 newIngredientAddPrice: 0,
                 isAddingNewIngredientAdd: false,
+            }));
+        } else {
+            alert('Please enter the name and price of the new ingredient before saving.');
+        }
+    };
+    handleSaveNewIngredientExcept = () => {
+        if (this.state.newIngredientExceptName.trim() !== '') {
+            const newIngredient = { name: this.state.newIngredientExceptName.trim() };
+            // this.state.pizza.AddNewIngredientExcept(newIngredient.name);
+            this.state.pizza.ingredientsExcepts = [...this.state.pizza.ingredientsExcepts,new IngredientsExcept(0, newIngredient.name, this.state.pizza.id)];
+            this.setState((prevState) => ({
+                newIngredientExceptName: '',
+                isAddingNewIngredientExcept: false,
             }));
         } else {
             alert('Please enter the name of the new ingredient before saving.');
@@ -229,7 +384,6 @@ export default class EditProduct extends React.Component {
         });
         console.log(this.state.pizza.ingredients);
     };
-
     handleDeleteIngredientAdd = (index) => {
         const updatedIngredients = [...this.state.pizza.ingredientsAdd];
         updatedIngredients.splice(index, 1);
@@ -242,6 +396,18 @@ export default class EditProduct extends React.Component {
         });
         console.log(this.state.pizza.ingredientsAdd);
     };
+    handleDeleteIngredientExcept = (index) => {
+        const updatedIngredients = [...this.state.pizza.ingredientsExcepts];
+        updatedIngredients.splice(index, 1);
+        console.log(updatedIngredients);
+        this.setState({
+            pizza: {
+                ...this.state.pizza,
+                ingredientsExcepts: updatedIngredients,
+            },
+        });
+        console.log(this.state.pizza.ingredientsExcepts);
+    };
       
       
     handleEditIngredient = (index) => {
@@ -253,7 +419,6 @@ export default class EditProduct extends React.Component {
             newIngredientName: editedIngredient,
         });
     };
-
     handleEditIngredientAdd = (index) => {
         const editedIngredientName = this.state.pizza.ingredientsAdd[index].name;
         const editedIngredientPrice = this.state.pizza.ingredientsAdd[index].price;
@@ -262,6 +427,15 @@ export default class EditProduct extends React.Component {
             editingIngredientIndex: index,
             newIngredientAddName: editedIngredientName,
             newIngredientAddPrice: editedIngredientPrice
+        });
+    };
+    handleEditIngredientExcept = (index) => {
+        const editedIngredient = this.state.pizza.ingredientsExcepts[index].name;
+    
+        this.setState({
+            isEditingIngredientExcept: true,
+            editingIngredientIndex: index,
+            newIngredientExceptName: editedIngredient,
         });
     };
 
@@ -279,7 +453,6 @@ export default class EditProduct extends React.Component {
             editingIngredientIndex: null,
         });
     };
-
     handleSaveEditedIngredientAdd = () => {
         const editedIngredients = [...this.state.pizza.ingredientsAdd];
         editedIngredients[this.state.editingIngredientIndex].name = this.state.newIngredientAddName;
@@ -296,6 +469,20 @@ export default class EditProduct extends React.Component {
             editingIngredientIndex: null,
         });
     };
+    handleSaveEditedIngredientExcept = () => {
+        const editedIngredients = [...this.state.pizza.ingredientsExcepts];
+        editedIngredients[this.state.editingIngredientIndex].name = this.state.newIngredientExceptName;
+    
+        this.setState({
+            pizza: {
+                ...this.state.pizza,
+                ingredientsExcept: editedIngredients,
+            },
+            isEditingIngredientExcept: false,
+            newIngredientExceptName: '',
+            editingIngredientIndex: null,
+        });
+    };
     
     handleCancelEdit = () => {
         this.setState({
@@ -305,7 +492,6 @@ export default class EditProduct extends React.Component {
             editingIngredientIndex: null,
         });
     };
-
     handleCancelEditAdd = () => {
         this.setState({
             isEditingIngredientAdd: false,
@@ -315,7 +501,14 @@ export default class EditProduct extends React.Component {
             editingIngredientIndex: null,
         });
     };
-    
+    handleCancelEditExcept = () => {
+        this.setState({
+            isEditingIngredientExcept: false,
+            isAddingNewIngredientExcept:false,
+            newIngredientExceptName: '',
+            editingIngredientIndex: null,
+        });
+    };
     
     
     async Editproduct(){
