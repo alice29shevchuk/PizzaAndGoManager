@@ -44,6 +44,7 @@ export default class OrdersAdmin extends React.Component {
                 },
                 {
                     name: 'User Name',
+                    sortable: true,
                     selector: row => row.name
                 },
                 {
@@ -68,6 +69,7 @@ export default class OrdersAdmin extends React.Component {
                 },
                 {
                     name: 'Order Data',
+                    sortable: true,
                     width: '140px',
                     selector: row => row.orderData
                 },
@@ -119,8 +121,18 @@ export default class OrdersAdmin extends React.Component {
                                     stateNow: row.state,
                                     idNow: row.id,
                                     idUser: row.idUser,
-                                    data: row.date,
-                                    idproduct: row.idProduct
+                                    orderData: row.orderData,
+                                    numberOfOrder: row.numberOfOrder,
+                                    name: row.name,
+                                    email: row.email,
+                                    phoneNumber: row.phoneNumber,
+                                    productsInOrders: row.productsInOrders,
+                                    totalPrice: row.totalPrice,
+                                    comment: row.comment,
+                                    paymentMethod: row.paymentMethod,
+                                    city: row.city,
+                                    department: row.department,
+                                    isDone: row.isDone
                                 })
                             }} >Edit</button>
                             <button style={{ marginLeft: 10 }} className='btn btn-danger' onClick={() => this.DeleteById(row.id)}>Delete</button>
@@ -145,7 +157,7 @@ export default class OrdersAdmin extends React.Component {
                         <input style={{ marginBottom: 0 }} className='inp-admin' type="text" placeholder='Enter query...' onChange={this.handleFilter} />
                     </div>
                     <DataTable title='Orders' columns={this.state.columns} data={this.state.records} fixedHeader pagination></DataTable>
-                    {this.state.isEdit && <EditOrder stateNow={this.state.stateNow} setStateNow={this.setStateNow} edit={this.EditNow} />}
+                    {this.state.isEdit && <EditOrder id={this.state.idNow} numberOfOrder={this.state.numberOfOrder} idUser={this.state.idUser} name={this.state.name} email={this.state.email} phoneNumber={this.state.phoneNumber} productsInOrders={this.state.productsInOrders} totalPrice={this.state.totalPrice} comment={this.state.comment} paymentMethod={this.state.paymentMethod} orderData={this.state.orderData} city={this.state.city} department={this.state.department} isDone={this.state.isDone} isShow={this.EditNow} />}
                 </div>
             </div>
         )
@@ -158,7 +170,7 @@ export default class OrdersAdmin extends React.Component {
         await axios.post(`https://localhost:7031/api/ControllerClass/update-order`, {
             "id": this.state.idNow,
             "idUser": `${this.state.idUser}`,
-            "date": `${this.state.data}`,
+            "date": `${this.state.orderData}`,
             "idProduct": this.state.idproduct,
             "state": state
         })
@@ -167,7 +179,7 @@ export default class OrdersAdmin extends React.Component {
         for (let i = 0; i < this.state.records.length; i++) {
             if (this.state.records[i].id === this.state.idNow) {
                 const mas = [...this.state.records]
-                mas.splice(i, 1, { id: this.state.idNow, idUser: this.state.idUser, date: this.state.data, idProduct: this.state.idproduct, state: state })
+                mas.splice(i, 1, { id: this.state.idNow, idUser: this.state.idUser, date: this.state.orderData, idProduct: this.state.idproduct, state: state })
                 this.setState({ records: mas })
             }
         }

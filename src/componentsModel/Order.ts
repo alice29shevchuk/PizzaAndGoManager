@@ -15,7 +15,23 @@ export class Order {
     department: string;
     isDone: boolean;
    
-    constructor(id: number, numberOfOrder: string, idUser: string, name: string, email: string, phoneNumber: string, productsInOrders: ProductsInOrders[], totalPrice: number, comment: string, paymentMethod: string, orderData: string, city: string, department: string, isDone: boolean) {
+    constructor(
+      id: number,
+      numberOfOrder: string,
+      idUser: string,
+      name: string,
+      email: string,
+      phoneNumber: string,
+      productsInOrders: ProductsInOrders[],
+      totalPrice: number,
+      comment: string,
+      paymentMethod: string,
+      orderData: string,
+      city: string,
+      department: string,
+      isDone: boolean
+      
+      ) {
         this.id = id;
         this.numberOfOrder = numberOfOrder;
         this.idUser = idUser;
@@ -30,5 +46,8 @@ export class Order {
         this.city = city;
         this.department = department;
         this.isDone = isDone;
+
+        console.log(this);
+        
       }
    }
