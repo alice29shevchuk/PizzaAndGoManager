@@ -456,14 +456,18 @@ main .addToBucket:hover,
     font-size: 14px;
 }
 .add-product select{
-    width: 500px;
+    width: 440px;
     height: 30px;
     margin: 5px 0px 5px 0px;
     border-radius: 5px;
     padding: 5px;
     font-size: 14px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
-
+.add-new-ingredient input{
+    width: 440px;
+}
 
 /* Стили для кнопки "Add New Ingredient" */
 .add-ingredient-button {
@@ -480,7 +484,9 @@ main .addToBucket:hover,
 .add-ingredient-button:hover {
     background-color: #45a049;
 }
-
+.allProductIngredients{
+    width: 440px;
+}
 /* ингрединты список */
 .ingredients-container {
     margin-top: 20px;
@@ -494,6 +500,7 @@ main .addToBucket:hover,
 
 .ingredients-open-close label {
     margin-right: 10px;
+
 }
 
 .ingredients-open-close button {
@@ -519,6 +526,7 @@ main .addToBucket:hover,
     margin-bottom: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 440px;
 }
 
 /* Стили для текста ингредиента */
@@ -542,7 +550,30 @@ main .addToBucket:hover,
 .ingredient-buttons button:hover {
     background-color: #ddd;
 }
-
+.buttonSave{
+    background-color: #4caf50; 
+    border: none; 
+    color: white; 
+    padding: 10px 20px; 
+    text-align: center; 
+    text-decoration: none; 
+    display: inline-block; 
+    font-size: 16px; 
+    margin-right: 10px; 
+    border-radius: 10px;
+}
+.buttonCancel{
+    background-color: #d84747; 
+    border: none; 
+    color: white; 
+    padding: 10px 20px; 
+    text-align: center; 
+    text-decoration: none; 
+    display: inline-block; 
+    font-size: 16px; 
+    margin-right: 10px; 
+    border-radius: 10px;
+}
 .custom-list {
     list-style-type: none;
     padding: 0;
@@ -559,11 +590,33 @@ main .addToBucket:hover,
   }
 
   .custom-list-item-minus::before {
-    content: "-"; /* Задаем контент для маркера списка */
-    margin-right: 5px; /* Добавляем отступ справа для разделения маркера и текста */
-    font-weight: bold; /* Можно задать полужирное начертание */
+    content: "-"; 
+    margin-right: 5px;
+    font-weight: bold; 
   }
   .custom-list-item-sauce {
     list-style-type: circle;
     padding: 0;
   }
+  .full-item .titleForAddIngredients{
+    margin: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .checkbox-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    height: 30px;
+  }
+  
+  .add-product .checkbox-input {
+    width: auto;
+    height: 10px;
+  }
+  
+  .checkbox-label {
+    margin-top: -3px;
+  }
+  
+  

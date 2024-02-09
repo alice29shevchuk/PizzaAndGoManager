@@ -55,7 +55,7 @@ export default class OrdersAdmin extends React.Component {
                 {
                     name: 'User Phone Number',
                     width: '130px',
-                    selector: row => row.phoneNumber.substring(2)
+                    selector: row => row.phoneNumber
                 },
                 {
                     name: 'City',
@@ -157,7 +157,7 @@ export default class OrdersAdmin extends React.Component {
                         <input style={{ marginBottom: 0 }} className='inp-admin' type="text" placeholder='Enter query...' onChange={this.handleFilter} />
                     </div>
                     <DataTable title='Orders' columns={this.state.columns} data={this.state.records} fixedHeader pagination></DataTable>
-                    {this.state.isEdit && <EditOrder id={this.state.idNow} numberOfOrder={this.state.numberOfOrder} idUser={this.state.idUser} name={this.state.name} email={this.state.email} phoneNumber={this.state.phoneNumber} productsInOrders={this.state.productsInOrders} totalPrice={this.state.totalPrice} comment={this.state.comment} paymentMethod={this.state.paymentMethod} orderData={this.state.orderData} city={this.state.city} department={this.state.department} isDone={this.state.isDone} isShow={this.EditNow} />}
+                    {this.state.isEdit && <EditOrder id={this.state.idNow} numberOfOrder={this.state.numberOfOrder} idUser={this.state.idUser} name={this.state.name} email={this.state.email} phoneNumber={this.state.phoneNumber} productsInOrders={this.state.productsInOrders} totalPrice={this.state.totalPrice} comment={this.state.comment} paymentMethod={this.state.paymentMethod} orderData={this.state.orderData} city={this.state.city} department={this.state.department} setStateNow={this.setStateNow} isDone={this.state.isDone} isShow={this.EditNow} />}
                 </div>
             </div>
         )
@@ -165,21 +165,14 @@ export default class OrdersAdmin extends React.Component {
     EditNow() {
         this.setState({ isEdit: !this.state.isEdit })
     }
-    async setStateNow(state) {
-        this.setState({ stateNow: state })
-        await axios.post(`https://localhost:7031/api/ControllerClass/update-order`, {
-            "id": this.state.idNow,
-            "idUser": `${this.state.idUser}`,
-            "date": `${this.state.orderData}`,
-            "idProduct": this.state.idproduct,
-            "state": state
-        })
+    async setStateNow() {
+        await axios.get(`http://alisa000077-001-site1.htempurl.com/api/Order/GetOrders`)
             .then(res => {
             })
         for (let i = 0; i < this.state.records.length; i++) {
             if (this.state.records[i].id === this.state.idNow) {
                 const mas = [...this.state.records]
-                mas.splice(i, 1, { id: this.state.idNow, idUser: this.state.idUser, date: this.state.orderData, idProduct: this.state.idproduct, state: state })
+                mas.splice(i, 1, { id: this.state.idNow, idUser: this.state.idUser, date: this.state.orderData, idProduct: this.state.idproduct})
                 this.setState({ records: mas })
             }
         }

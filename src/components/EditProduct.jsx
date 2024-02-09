@@ -91,9 +91,10 @@ export default class EditProduct extends React.Component {
                             ...prevState.pizza,
                             sauce: e.target.value
                         }}))}></input>
+                        <div className='allProductIngredients'>
                         <div className='ingredients-container'>
                             <div className='ingredients-open-close'>
-                                <label>Ингредиенты: </label>
+                                <label>Ингредиенты пиццы</label>
                                 {!this.state.isListIngredientsIsOpen ? ( 
                                     <button onClick={this.handleListIngredientsIsOpen}>&#9660;</button>
                                 ):(
@@ -117,10 +118,10 @@ export default class EditProduct extends React.Component {
                                     {this.state.isAddingNewIngredient || this.state.isEditingIngredient ? (
                                     <div className='add-new-ingredient'>
                                         <input type='text' placeholder='Введите название ингредиента...' value={this.state.newIngredientName} onChange={(e) => this.setState({ newIngredientName: e.target.value })} />
-                                        <button onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
+                                        <button className="buttonSave" onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
                                             {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
                                         </button>
-                                        <button onClick={this.handleCancelEdit}>Cancel</button>
+                                        <button className="buttonCancel" onClick={this.handleCancelEdit}>Cancel</button>
                                     </div>) : null}
                                 </div>
                             </div>
@@ -129,7 +130,7 @@ export default class EditProduct extends React.Component {
                         {/* ingredients-add */}
                         <div className='ingredients-container'>
                             <div className='ingredients-open-close'>
-                            <label>Ингредиенты для добавления: </label>
+                            <label>Ингредиенты для добавления</label>
                                 {!this.state.isListIngredientsAddIsOpen ? ( 
                                     <button onClick={this.handleListIngredientsAddIsOpen}>&#9660;</button>
                                 ):(
@@ -156,10 +157,10 @@ export default class EditProduct extends React.Component {
                                         <input type='text' placeholder='Введите название ингредиента для добавления...' value={this.state.newIngredientAddName} onChange={(e) => this.setState({ newIngredientAddName: e.target.value })} />
                                         <input type='number' placeholder='Введите цену ингредиента для добавления...' value={this.state.newIngredientAddPrice} onChange={(e) => this.setState({ newIngredientAddPrice: e.target.value })} />
 
-                                        <button onClick={this.state.isEditingIngredientAdd ? this.handleSaveEditedIngredientAdd : this.handleSaveNewIngredientAdd}>
+                                        <button className="buttonSave" onClick={this.state.isEditingIngredientAdd ? this.handleSaveEditedIngredientAdd : this.handleSaveNewIngredientAdd}>
                                             {this.state.isEditingIngredientAdd ? 'Save Edit' : 'Save New'}
                                         </button>
-                                        <button onClick={this.handleCancelEditAdd}>Cancel</button>
+                                        <button className="buttonCancel" onClick={this.handleCancelEditAdd}>Cancel</button>
                                     </div>) : null}
                                 </div>
                             </div>
@@ -169,7 +170,7 @@ export default class EditProduct extends React.Component {
                         {/* ingredients-except */}
                         <div className='ingredients-container'>
                             <div className='ingredients-open-close'>
-                            <label>Ингредиенты для исключения: </label>
+                            <label>Ингредиенты для исключения</label>
                                 {!this.state.isListIngredientsExceptIsOpen ? ( 
                                     <button onClick={this.handleListIngredientsExceptIsOpen}>&#9660;</button>
                                 ):(
@@ -194,16 +195,16 @@ export default class EditProduct extends React.Component {
                                     <div className='add-new-ingredient'>
                                         <input type='text' placeholder='Введите название ингредиента для исключения...' value={this.state.newIngredientExceptName} onChange={(e) => this.setState({ newIngredientExceptName: e.target.value })} />
 
-                                        <button onClick={this.state.isEditingIngredientExcept ? this.handleSaveEditedIngredientExcept : this.handleSaveNewIngredientExcept}>
+                                        <button className="buttonSave" onClick={this.state.isEditingIngredientExcept ? this.handleSaveEditedIngredientExcept : this.handleSaveNewIngredientExcept}>
                                             {this.state.isEditingIngredientExcept ? 'Save Edit' : 'Save New'}
                                         </button>
-                                        <button onClick={this.handleCancelEditExcept}>Cancel</button>
+                                        <button className="buttonCancel" onClick={this.handleCancelEditExcept}>Cancel</button>
                                     </div>) : null}
                                 </div>
                             </div>
                             )}
                         </div>
-
+                        </div>
                         {this.state.pizza.isPopular == true && (
                             <select onChange={(e)=>{this.ChangeISPopular(e.target.value)}}>
                                 <option selected>True</option>
