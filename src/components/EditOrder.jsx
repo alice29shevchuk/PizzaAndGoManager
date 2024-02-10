@@ -47,6 +47,10 @@ export default class EditOrder extends React.Component {
             newPizzaInOrder:0,
             indexForIng:0,
             indexForCheckIng: 0,
+
+            cities:[],
+            selectedCityId:0,
+            departments:[]
         }
         this.stateProcess = this.stateProcess.bind(this)      
     }
@@ -56,10 +60,32 @@ export default class EditOrder extends React.Component {
           .then(res => {
             const pizzas = res.data;
             this.setState({listPizza:pizzas});
-            console.log("Pizzas:", pizzas);
           })
           .catch(error => {
             console.error('Error fetching pizzas:', error);
+        });
+
+        axios.get('http://alisa000077-001-site1.htempurl.com/api/City/GetCityes') // Замените URL на соответствующий эндпоинт для получения списка городов
+        .then(result => {
+          const cities = result.data;
+          cities.map((city)=>{
+            if(city.name==this.state.order.city)
+            {
+              this.setState({selectedCityId: city.id});
+              axios.get(`http://alisa000077-001-site1.htempurl.com/api/Department/GetDepartmentByID?id=${city.id}`)
+              .then(res => {
+                const shops = res.data;
+                this.setState({ departments:shops });
+              })
+              .catch(error => {
+                console.error('Error fetching departments:', error);
+              });
+            }
+          })
+          this.setState({cities:cities});
+        })
+        .catch(error => {
+          console.error('Error fetching cities:', error);
         });
         };
   render() {
@@ -73,16 +99,26 @@ export default class EditOrder extends React.Component {
                   ...prevState.order,
                   phoneNumber: e.target.value
               }}))}></input>
-              <input type='text' min={200} max={800} placeholder='City...' value={this.state.order.city} onChange={(e) => this.setState(prevState => ({
+              {/* <input type='text' min={200} max={800} placeholder='City...' value={this.state.order.city} onChange={(e) => this.setState(prevState => ({
                   order: {
                   ...prevState.order,
                   city: e.target.value
-              }}))}></input>
-              <input min={0} type='text' placeholder='Department...' value={this.state.order.department} onChange={(e) => this.setState(prevState => ({
+              }}))}></input> */}
+              <select value={this.state.order.city} onChange={this.handleCityChange}>
+                {this.state.cities.map(city=> (
+                <option key={city.id} value={city.name}>{city.name}</option>
+                ))}
+              </select>
+              {/* <input min={0} type='text' placeholder='Department...' value={this.state.order.department} onChange={(e) => this.setState(prevState => ({
                   order: {
                   ...prevState.order,
                   department: e.target.value
-              }}))}></input>
+              }}))}></input> */}
+              <select value={this.state.order.department} onChange={this.handleDepartmentChange}>
+                {this.state.departments.map(dep=> (
+                <option key={dep.id} value={dep.name}>{dep.name}</option>
+                ))}
+              </select>
               <input type='text' placeholder='Order Date...' value={this.state.order.orderData} onChange={(e) => this.setState(prevState => ({
                   order: {
                   ...prevState.order,
@@ -194,6 +230,41 @@ export default class EditOrder extends React.Component {
         this.setState({isDone:false})
         this.props.setStateNow(false)
     }
+  }
+  handleCityChange=(e)=>{
+    const selectedCity = e.target.value;
+    this.state.cities.map((city)=>{
+      console.log('city name = '+city.name);
+      console.log('выбранный город = '+selectedCity);
+      if(city.name==selectedCity)
+      {
+        console.log('city.id = '+city.id);
+        this.setState({selectedCityId:city.id});
+        axios.get(`http://alisa000077-001-site1.htempurl.com/api/Department/GetDepartmentByID?id=${city.id}`)
+        .then(res => {
+          const shops = res.data;
+          console.log("shops: ",shops);
+          this.setState({ departments:shops });
+        })
+        .catch(error => {
+          console.error('Error fetching departments:', error);
+        });
+        this.setState(prevState => ({
+          order: {
+          ...prevState.order,
+          city: e.target.value
+          }
+        }))
+      }
+    })
+  };
+  handleDepartmentChange=(e)=>{
+    this.setState(prevState => ({
+      order: {
+      ...prevState.order,
+      department: e.target.value
+      }
+    }))
   }
   isIngredientSelected = (ingredientName) => {
     for(var i = 0; i< this.state.listPizza[this.state.indexForIng].ingredientsAdd.length;i++){
@@ -330,27 +401,26 @@ export default class EditOrder extends React.Component {
       }));
     }
   };
-  
-  handleIngredientExceptCheckboxChange=(e, ingredientName)=>{
+  handleIngredientExceptCheckboxChange = (e, ingredientName) => {
     const isChecked = e.target.checked;
     console.log(isChecked);
-    const { indexForIng, order } = this.state;
+    const { indexForCheckIng, order } = this.state;
 
     if(isChecked){
 
       const updatedProductsInOrders = order.productsInOrders.map(product => {
-        var idIng = null;
-        if (product.title === this.state.listPizza[indexForIng].title) {
+        var idIng = 0;
+        if (product.title === this.state.listPizza[this.state.indexForIng].title) {
           for(var i = 0;i< this.state.listPizza.length;i++){
             for(var x = 0; x< this.state.listPizza[i].ingredientsExcepts.length;x++){
               if(this.state.listPizza[i].ingredientsExcepts[x].name == ingredientName){
-                idIng = new IngredientsExcept(this.state.listPizza[i].ingredientsExcepts[x].id,this.state.listPizza[i].ingredientsExcepts[x].name,this.state.listPizza[i].ingredientsExcepts[x].pizzaId) ;
+                idIng = this.state.listPizza[i].ingredientsExcepts[x].id;
               }
             }
           }
           return {
             ...product,
-            excludedIngredients: [...product.excludedIngredients, idIng]////////tut
+            excludedIngredients: [...product.excludedIngredients, {id:0, title: ingredientName,productsInOrdersId:product.id }]/////////tut
           };
         }
         return product;
@@ -362,10 +432,18 @@ export default class EditOrder extends React.Component {
           productsInOrders: updatedProductsInOrders,
         },
       }));
+      var newSelectIng = null;
+      this.state.listPizza.map((pizza)=>{
+         pizza.ingredientsExcepts.map((ing)=>{
+          if(ing.name == ingredientName){
+           newSelectIng = ing;
+          }
+        })
+      })
     }
     else{
       const updatedProductsInOrders = order.productsInOrders.map(product => {
-        if (product.title === this.state.listPizza[indexForIng].title) {
+        if (product.title === this.state.listPizza[indexForCheckIng].title) {
           return {
             ...product,
             excludedIngredients: product.excludedIngredients.filter(ing => ing.title !== ingredientName)
@@ -381,7 +459,58 @@ export default class EditOrder extends React.Component {
         },
       }));
     }
-  }
+  };
+  // handleIngredientExceptCheckboxChange=(e, ingredientName)=>{
+  //   const isChecked = e.target.checked;
+  //   console.log(isChecked);
+  //   const { indexForIng, order } = this.state;
+
+  //   if(isChecked){
+
+  //     const updatedProductsInOrders = order.productsInOrders.map(product => {
+  //       var idIng = null;
+  //       if (product.title === this.state.listPizza[indexForIng].title) {
+  //         for(var i = 0;i< this.state.listPizza.length;i++){
+  //           for(var x = 0; x< this.state.listPizza[i].ingredientsExcepts.length;x++){
+  //             if(this.state.listPizza[i].ingredientsExcepts[x].name == ingredientName){
+  //               idIng = new IngredientsExcept(this.state.listPizza[i].ingredientsExcepts[x].id,this.state.listPizza[i].ingredientsExcepts[x].name,this.state.listPizza[i].ingredientsExcepts[x].pizzaId) ;
+  //             }
+  //           }
+  //         }
+  //         return {
+  //           ...product,
+  //           excludedIngredients: [...product.excludedIngredients, idIng]////////tut
+  //         };
+  //       }
+  //       return product;
+  //     });
+  
+  //     this.setState(prevState => ({
+  //       order: {
+  //         ...prevState.order,
+  //         productsInOrders: updatedProductsInOrders,
+  //       },
+  //     }));
+  //   }
+  //   else{
+  //     const updatedProductsInOrders = order.productsInOrders.map(product => {
+  //       if (product.title === this.state.listPizza[indexForIng].title) {
+  //         return {
+  //           ...product,
+  //           excludedIngredients: product.excludedIngredients.filter(ing => ing.title !== ingredientName)
+  //         };
+  //       }
+  //       return product;
+  //     });
+  
+  //     this.setState(prevState => ({
+  //       order: {
+  //         ...prevState.order,
+  //         productsInOrders: updatedProductsInOrders,
+  //       },
+  //     }));
+  //   }
+  // }
   
 handleListIngredientsIsOpen=()=>{
     this.setState({
@@ -463,7 +592,8 @@ handleAddNewProduct = () => {
       order: {
         ...prevState.order,
         // productsInOrders: [...prevState.order.productsInOrders, new ProductsInOrders(0,pizzaForAdd.title,pizzaForAdd.ingredientsAdd,pizzaForAdd.ingredientsExcepts,pizzaForAdd.sauce,pizzaForAdd.price,1,this.state.order.id)],
-        productsInOrders: [...prevState.order.productsInOrders, new ProductsInOrders(0,pizzaForAdd.title,[],[],pizzaForAdd.sauce,pizzaForAdd.price,1,this.state.order.id)],
+        // productsInOrders: [...prevState.order.productsInOrders, new ProductsInOrders(0,pizzaForAdd.title,[],[],pizzaForAdd.sauce,pizzaForAdd.price,1,this.state.order.id)],
+        productsInOrders: [...prevState.order.productsInOrders, new ProductsInOrders(0,pizzaForAdd.title,[],[],'',pizzaForAdd.price,1,this.state.order.id)],
 
       },
       isAddingNewIngredient: false,

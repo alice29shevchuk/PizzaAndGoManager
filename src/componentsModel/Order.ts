@@ -47,7 +47,7 @@ export class Order {
         this.department = department;
         this.isDone = isDone;
 
-        console.log(this);
+        // console.log(this);
         
       }
    }

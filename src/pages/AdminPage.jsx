@@ -33,7 +33,7 @@ export default function AdminPage() {
   }
   const ChooiceCat = (id) => {
     setIdCat(id)
-    console.log(id)
+    // console.log(id)
   }
   useEffect(() => {
     // getUsers()
@@ -55,7 +55,7 @@ export default function AdminPage() {
     axios.get(`http://alisa000077-001-site1.htempurl.com/api/Pizza/GetPizzas`)
       .then(res => {
         const rest = res.data;
-        console.log(res.data);
+        // console.log(res.data);
         setIdProductNow(rest[rest.length-1].id)
         setCountProducts(rest.length)
         setDataProduct(rest)
@@ -66,7 +66,7 @@ export default function AdminPage() {
     axios.get(`http://alisa000077-001-site1.htempurl.com/api/Category/GetCategoryes`)
       .then(res => {
         const rest = res.data;
-        console.log(res.data);
+        // console.log(res.data);
         setIdCategoryNow(rest[rest.length-1].id)
         setCountCategories(rest.length)
         setDataCategories(rest)
@@ -76,7 +76,7 @@ export default function AdminPage() {
     await axios.get(`http://alisa000077-001-site1.htempurl.com/api/Order/GetOrders`)
       .then(res => {
         const rest =  res.data;
-        console.log(res.data);
+        // console.log(res.data);
         setCountOrders(rest.length)
         setDaataOrders(rest)
         return rest
