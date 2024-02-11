@@ -146,6 +146,7 @@ export default class OrdersAdmin extends React.Component {
         this.DeleteById = this.DeleteById.bind(this)
         this.setStateNow = this.setStateNow.bind(this)
         this.handleFilter = this.handleFilter.bind(this)
+        this.UpdateOrder= this.UpdateOrder.bind(this)
 
     }
     render() {
@@ -157,13 +158,25 @@ export default class OrdersAdmin extends React.Component {
                         <input style={{ marginBottom: 0 }} className='inp-admin' type="text" placeholder='Enter query...' onChange={this.handleFilter} />
                     </div>
                     <DataTable title='Orders' columns={this.state.columns} data={this.state.records} fixedHeader pagination></DataTable>
-                    {this.state.isEdit && <EditOrder id={this.state.idNow} numberOfOrder={this.state.numberOfOrder} idUser={this.state.idUser} name={this.state.name} email={this.state.email} phoneNumber={this.state.phoneNumber} productsInOrders={this.state.productsInOrders} totalPrice={this.state.totalPrice} comment={this.state.comment} paymentMethod={this.state.paymentMethod} orderData={this.state.orderData} city={this.state.city} department={this.state.department} setStateNow={this.setStateNow} isDone={this.state.isDone} isShow={this.EditNow} />}
+                    {this.state.isEdit && <EditOrder UpdateOrder={this.UpdateOrder} id={this.state.idNow} numberOfOrder={this.state.numberOfOrder} idUser={this.state.idUser} name={this.state.name} email={this.state.email} phoneNumber={this.state.phoneNumber} productsInOrders={this.state.productsInOrders} totalPrice={this.state.totalPrice} comment={this.state.comment} paymentMethod={this.state.paymentMethod} orderData={this.state.orderData} city={this.state.city} department={this.state.department} setStateNow={this.setStateNow} isDone={this.state.isDone} isShow={this.EditNow} />}
                 </div>
             </div>
         )
     }
     EditNow() {
         this.setState({ isEdit: !this.state.isEdit })
+    }
+
+    UpdateOrder=(id,idUser,numberOfOrder,name,email,orderData,phoneNumber,totalPrice,paymentMethod,city,department,comment,isDone,productsInOrders)=>{
+        console.log(this.state.records);
+        for (let i = 0; i < this.state.records.length; i++) {
+            if (this.state.records[i].id === id) {
+                const mas = [...this.state.records]
+                mas.splice(i, 1, { id, idUser,numberOfOrder,name,email,orderData,phoneNumber,totalPrice,paymentMethod,city,department,comment,isDone,productsInOrders })
+                this.setState({ records: mas })
+            }
+        }
+        console.log(this.state.records);
     }
     async setStateNow() {
         await axios.get(`http://alisa000077-001-site1.htempurl.com/api/Order/GetOrders`)
