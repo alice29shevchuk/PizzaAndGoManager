@@ -50,4 +50,24 @@ export class Order {
         // console.log(this);
         
       }
+      updateCount(newCount:number, idProduct:number){
+        this.productsInOrders.map((product)=>{
+          if(product.id == idProduct){
+            product.count = newCount;
+          }
+        })
+        console.log(typeof(newCount));
+      }
+
+      getOrder(){
+        return this;
+      }
+      updateTotalPrice(){
+        var tempPrice = 0;
+        this.productsInOrders.map((product) => {
+          tempPrice += product.price
+        })
+        this.totalPrice = tempPrice;
+
+      }
    }

@@ -141,27 +141,18 @@ export default class EditOrder extends React.Component {
               }}
               ></input>
               {!this.state.isPhoneNumberValid && <span style={{ color: 'red',fontSize:12 }}>Пожалуйста, введите полный номер телефона</span>}
-
-              {/* <input type='text' min={200} max={800} placeholder='City...' value={this.state.order.city} onChange={(e) => this.setState(prevState => ({
-                  order: {
-                  ...prevState.order,
-                  city: e.target.value
-              }}))}></input> */}
+              <div className='editSelectCityDepartment'>
               <select value={this.state.order.city} onChange={this.handleCityChange}>
                 {this.state.cities.map(city=> (
                 <option key={city.id} value={city.name}>{city.name}</option>
                 ))}
               </select>
-              {/* <input min={0} type='text' placeholder='Department...' value={this.state.order.department} onChange={(e) => this.setState(prevState => ({
-                  order: {
-                  ...prevState.order,
-                  department: e.target.value
-              }}))}></input> */}
               <select value={this.state.order.department} onChange={this.handleDepartmentChange}>
                 {this.state.departments.map(dep=> (
                 <option key={dep.id} value={dep.name}>{dep.name}</option>
                 ))}
               </select>
+              </div>
               <input type='text' readOnly={true} placeholder='Order Date...' value={this.state.order.orderData} onChange={(e) => this.setState(prevState => ({
                   order: {
                   ...prevState.order,
@@ -252,45 +243,220 @@ export default class EditOrder extends React.Component {
                   </select>
               )}
           </div>
-          <div style={{ width: 100, borderRadius: 10, background: 'green' }} className='addToBucket' onClick={()=>{this.Editproduct()}}>Save</div>
+          {this.state.isPhoneNumberValid ? (
+            <button style={{ width: 100, borderRadius: 10, background: 'green' }} className='addToBucket' onClick={this.Editproduct}>Save</button>
+            ) : (
+            <button style={{ width: 100, borderRadius: 10, background: 'red',position:'absolute',right: '20px',bottom: '20px',background: '#ca5252;',width: '100px', height: '35px', textAlign: 'center', lineHeight: '35px', fontWeight: 600, cursor:'not-allowed'}} onClick={this.Editproduct} disabled={!this.state.isPhoneNumberValid}>Save</button>
+          )}
           <div style={{ width: 100, borderRadius: 10, marginRight: '20%' }} className='addToBucket' onClick={() => this.props.isShow()} >Close</div>
       </div>
   </div>
     )
   }
 
-  updateCount(count){
-    var tempTotalPrice = this.state.newIngredientPrice * count ;
-   this.state.order.productsInOrders.map((product)=>{
-    product.selectedIngredients.map((ing) => {
-      this.state.listPizza.map((pizza) => {
-        if(product.title == pizza.title){
+  // updateCount(count){
+  //   var tempTotalPrice = this.state.newIngredientPrice * count ;
+  //   var index = 0;
+  //   this.state.order.productsInOrders.map((product)=>{
+  //   product.selectedIngredients.map((ing) => {
+  //     this.state.listPizza.map((pizza) => {
+  //       if(product.title == pizza.title){
+  //         pizza.ingredientsAdd.map((ingAdd) => {
+  //           if(ing.title == ingAdd.name){
+  //             tempTotalPrice += ingAdd.price;
+  //             console.log("Index: " + index);
+  //         this.setState(prevState => {
+  //           const updatedProductsInOrders = [...prevState.order.productsInOrders];
+  //           updatedProductsInOrders[index].count = count;
+  //           return { order: { ...prevState.order, productsInOrders: updatedProductsInOrders } };
+  //         });
+  //           }
+  //         })
+  //       }
+  //     })
+  //     index +=1;
+  //   })
+  // })
+  //   this.setState((prevState) => ({
+  //     newIngredientCount: count,
+  //     newIngredientTotalPrice: tempTotalPrice
+  //   }));
+  // }
+
+  updateCount(count) {
+    // Создаем переменную для хранения общей цены
+    let tempTotalPrice = 0;
+
+    this.setState((prevState) => {
+        // Копируем предыдущий заказ
+        const updatedOrder = { ...prevState.order };
+
+        // Находим продукт для обновления по индексу
+        const productToUpdate = updatedOrder.productsInOrders[prevState.indexForIng];
+
+        if (productToUpdate) {
+            // Обновляем count для продукта
+            // this.state.order.updateCount(parseInt(count,10),productToUpdate.id);
+            // this.setState({order: this.state.order.getOrder()});
+            productToUpdate.count = parseInt(count,10);
+
+            // Пересчитываем цену продукта
+            let pizzaPrice = productToUpdate.price * count;
+            productToUpdate.selectedIngredients.forEach((ing) => {
+                this.state.listPizza.forEach((pizza) => {
+                    if (pizza.title === productToUpdate.title) {
+                        pizza.ingredientsAdd.forEach((ingAdd) => {
+                            if (ing.title === ingAdd.name) {
+                                pizzaPrice += ingAdd.price*count;
+                            }
+                        });
+                    }
+                });
+            });
+            // Добавляем цену продукта к общей цене заказа
+            tempTotalPrice += pizzaPrice;
+        }
+
+        return {
+            order: updatedOrder,
+            newIngredientCount: count,
+            newIngredientTotalPrice: tempTotalPrice
+        };
+    });
+    console.log(this.state.order);
+}
+
+
+//   updateCount(count) {
+//     var tempTotalPrice = 0;
+
+//     this.setState((prevState)=>{
+//       order:{
+        
+//       }
+//     })
+//     this.state.order.productsInOrders.map((product, index) =>{
+//       if(product.id == this.state.order.productsInOrders[this.state.indexForIng].id){
+//        tempTotalPrice = product.price * count;
+//        console.log("tottal: " + tempTotalPrice);
+//        product.selectedIngredients.map((ing) => {
+//         this.state.listPizza.map((pizza)=>{
+//           if(pizza.title == product.title){
+//             pizza.ingredientsAdd.map((ingAdd) => {
+//               if(ing.title == ingAdd.name){
+//                 tempTotalPrice += ingAdd.price;
+//               }
+//             })
+//           }
+//         })
+//        })
+//       }
+//     });
+  
+//     this.setState((prevState) => ({
+//       newIngredientCount: count,
+//       newIngredientTotalPrice: tempTotalPrice
+//     }));
+// }
+
+setPriceIng(){
+  var tempTotalPrice = 0;
+
+  this.state.order.productsInOrders.map((product, index) =>{
+    if(product.id == this.state.order.productsInOrders[this.state.indexForIng].id){
+     tempTotalPrice = product.price * product.count;
+     product.selectedIngredients.map((ing) => {
+      this.state.listPizza.map((pizza)=>{
+        if(pizza.title == product.title){
           pizza.ingredientsAdd.map((ingAdd) => {
             if(ing.title == ingAdd.name){
-              tempTotalPrice += ingAdd.price;
+              tempTotalPrice += ingAdd.price*product.count;
             }
           })
         }
       })
-    })
-   })
-    // for(var i=0;i<this.state.order.selectedIngredients.length;i++){
-    //   for(var x =0;x<this.state.listPizza.ingredientsAdd.length;x++){
-    //     console.log("1: " + this.state.listPizza.ingredientsAdd[x].name + " 2: "+this.state.order.selectedIngredients[i].title);
-    //     if(this.state.listPizza.ingredientsAdd[x].name == this.state.order.selectedIngredients[i].title){
-    //       console.log(this.state.listPizza.ingredientsAdd[x].price);
-    //       tempTotalPrice += this.state.listPizza.ingredientsAdd[x].price;
-    //     }
-    //   }
-    // }
-    this.setState((prevState) => ({
-      newIngredientCount: count,
-      newIngredientTotalPrice: tempTotalPrice
-    }));
+     })
+    }
+  });
 
-    // newIngredientCount: e.target.value,
-    // newIngredientTotalPrice: this.state.newIngredientPrice * e.target.value,
-  }
+  this.setState((prevState) => ({
+    // newIngredientCount: count,
+    newIngredientTotalPrice: tempTotalPrice
+  }));
+}
+
+// setPriceIng(){
+//   var tempTotalPrice = 0;
+
+//     this.state.order.productsInOrders.forEach((product, productIndex) => {
+//       if(product.selectedIngredients.length == 0){
+//         tempTotalPrice = this.state.newIngredientPrice * this.state.order.productsInOrders[productIndex].count;
+//       }
+//       else{
+//         product.selectedIngredients.forEach(ing => {
+//           this.state.listPizza.forEach(pizza => {
+//             console.log(product.selectedIngredients.length);
+//               if (product.title === pizza.title) {
+               
+//                   pizza.ingredientsAdd.forEach(ingAdd => {
+//                       if (ing.title === ingAdd.name) {
+//                         if(tempTotalPrice == 0){
+//                           tempTotalPrice = this.state.newIngredientPrice * this.state.order.productsInOrders[productIndex].count;
+//                         }
+//                           tempTotalPrice += ingAdd.price;
+//                           // console.log("Index: " + productIndex);
+//                           // const updatedProductsInOrders = [...this.state.order.productsInOrders];
+//                           // updatedProductsInOrders[productIndex].count = count;
+//                           this.setState(prevState => ({
+//                               // order: { ...prevState.order, productsInOrders: updatedProductsInOrders },
+//                               totalPrice: tempTotalPrice // Обновление состояния цены
+//                           }));
+//                       }
+//                   });
+//               }
+//           });
+//       });
+//       }
+       
+//     });
+//       this.setState((prevState) => ({
+//       // newIngredientCount: count,
+//       newIngredientTotalPrice: tempTotalPrice
+//     }));
+// }
+
+// setPriceIng() {
+//   let tempTotalPrice = 0;
+
+//   this.state.order.productsInOrders.forEach((product) => {
+//       const pizza = this.state.listPizza.find(pizza => pizza.title === product.title);
+//       if (pizza) {
+//           let pizzaPrice = pizza.price * product.count;
+
+//           // Если есть выбранные ингредиенты, добавляем их стоимость
+//           if (product.selectedIngredients.length > 0) {
+//               product.selectedIngredients.forEach(selectedIng => {
+//                   const ingAdd = pizza.ingredientsAdd.find(ing => ing.name === selectedIng.title);
+//                   if (ingAdd) {
+//                       pizzaPrice += ingAdd.price;
+//                   }
+//               });
+//           }
+
+//           tempTotalPrice += pizzaPrice;
+//       }
+//   });
+
+//   this.setState({
+//       totalPrice: tempTotalPrice,
+//       newIngredientTotalPrice: tempTotalPrice
+//   });
+// }
+
+
+
+
+
   stateProcess(text){
 
     console.log(text);
@@ -506,12 +672,24 @@ export default class EditOrder extends React.Component {
         return product;
       });
   
-      this.setState(prevState => ({
-        order: {
-          ...prevState.order,
-          productsInOrders: updatedProductsInOrders,
-        },
-      }));
+      // this.setState(prevState => ({
+      //   order: {
+      //     ...prevState.order,
+      //     productsInOrders: updatedProductsInOrders,
+      //   },
+      // }));
+      this.setState(
+        (prevState) => ({
+          order: {
+            ...prevState.order,
+            productsInOrders: updatedProductsInOrders,
+          },
+        }),
+        () => {
+          this.setPriceIng();
+        }
+      );
+      
       var newSelectIng = null;
       this.state.listPizza.map((pizza)=>{
          pizza.ingredientsAdd.map((ing)=>{
@@ -532,12 +710,24 @@ export default class EditOrder extends React.Component {
         return product;
       });
   
-      this.setState(prevState => ({
-        order: {
-          ...prevState.order,
-          productsInOrders: updatedProductsInOrders,
-        },
-      }));
+      // this.setState(prevState => ({
+      //   order: {
+      //     ...prevState.order,
+      //     productsInOrders: updatedProductsInOrders,
+      //   },
+      // }));
+
+      this.setState(
+        (prevState) => ({
+          order: {
+            ...prevState.order,
+            productsInOrders: updatedProductsInOrders,
+          },
+        }),
+        () => {
+          this.setPriceIng();
+        }
+      );   
     }
   };
   handleIngredientExceptCheckboxChange = (e, ingredientName) => {
@@ -870,6 +1060,8 @@ handleEditIngredient = (index) => {
         console.log('indexForIng='+this.state.indexForIng);
       }
     }
+
+    this.setPriceIng();
 };
 handleEditIngredientAdd = (index) => {
   const editedIngredientName = this.state.pizza.ingredientsAdd[index].name;
@@ -976,10 +1168,27 @@ async Editproduct(){
   console.log(this.state.order);
     const json =  this.state.order;
     console.log(json);
+    console.log(this.state.order.productsInOrders[0].count);
     await axios.post(`http://alisa000077-001-site1.htempurl.com/api/Order/UpdateOrder`, json)
         .then(res => {
     })
-    this.props.UpdateOrder(this.state.order.id,this.state.order.idUser,this.state.order.numberOfOrder,this.state.order.name,this.state.order.email,this.state.order.orderData,this.state.order.phoneNumber,this.state.order.totalPrice,this.state.order.paymentMethod,this.state.order.city,this.state.order.department,this.state.order.comment,this.state.order.isDone,this.state.order.productsInOrders);
+    var newTotal = 0;
+    this.state.order.productsInOrders.map((product) => { 
+     this.state.listPizza.map((pizza)=>{
+      if(product.title == pizza.title){
+        newTotal += (product.price * product.count);
+        product.selectedIngredients.map((ing) => {
+          pizza.ingredientsAdd.map((ingAdd) => {
+            if(ing.productsInOrdersId == ingAdd.pizzaId){
+              newTotal += (ingAdd.price * product.count);
+            }
+          })
+        })
+      }
+     });
+    });
+    console.log(newTotal);
+    this.props.UpdateOrder(this.state.order.id,this.state.order.idUser,this.state.order.numberOfOrder,this.state.order.name,this.state.order.email,this.state.order.orderData,this.state.order.phoneNumber,newTotal,this.state.order.paymentMethod,this.state.order.city,this.state.order.department,this.state.order.comment,this.state.order.isDone,this.state.order.productsInOrders);
     this.props.isShow();
     // this.props.updateProduct(
     //     this.state.pizza.id,

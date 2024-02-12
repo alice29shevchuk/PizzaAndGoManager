@@ -50,11 +50,11 @@ export default class CustomersAdmin  extends React.Component {
                         <input style={{marginBottom:0}} className='inp-admin' type="text" placeholder='Enter query...' onChange={this.handleFilter}/>
                     </div>
                     <DataTable title='Users' columns={this.state.columnsUser} data={this.state.recordsUsers} fixedHeader pagination></DataTable>
-                    <br></br> <br></br> <br></br>
+                    {/* <br></br> <br></br> <br></br>
                     <div className='text-end'>
                         <input style={{marginBottom:0}} className='inp-admin' type="text" placeholder='Enter query...' onChange={this.handleFilterAdmin}/>
                     </div>
-                    <DataTable title='Admins' columns={this.state.columns} data={this.state.records} fixedHeader pagination ></DataTable>
+                    <DataTable title='Admins' columns={this.state.columns} data={this.state.records} fixedHeader pagination ></DataTable> */}
                 </div>
       </div>
     )

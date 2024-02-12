@@ -79,7 +79,8 @@ class CategoriesAdmin extends React.Component {
     async DeleteById(id) {
         axios.delete(`http://alisa000077-001-site1.htempurl.com/api/Category/DeleteCategory?idForDelete=${id}`)
             .then(res => {
-                this.setState({ status: res.data['status'] })
+                this.setState({ status: res.data['statusCode'] })
+                console.log(res.data['statusCode']);
             })
         setTimeout(() => {
             if (this.state.status === 400) {

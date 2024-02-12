@@ -618,5 +618,16 @@ main .addToBucket:hover,
   .checkbox-label {
     margin-top: -3px;
   }
-  
+  .editSelectCityDepartment{
+    display: block;
+  }
+  .editSelectCityDepartment select{
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+  .editSelectCityDepartment select:last-child{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
   
