@@ -23,10 +23,10 @@ export default function Sidebar({ChooiceCat}) {
                 <i className='bi bi-table fs-5 me-3'></i>
                 <span >Pizzas</span>
             </a>
-            {/* <a className='list-group-item py-2 my-1'  onClick={()=>{ChooiceCat(4)}}>
+            <a className='list-group-item py-2 my-1'  onClick={()=>{ChooiceCat(4)}}>
                 <i className='bi bi-people fs-5 me-3'></i>
-                <span >Customers / Admins</span>
-            </a> */}
+                <span >Cities / Departments</span>
+            </a>
             <a className='list-group-item py-2 my-1'  onClick={()=>{ChooiceCat(5)}}>
                 <i className='bi bi-basket3-fill fs-5 me-3'></i>
                 <span >Orders</span>

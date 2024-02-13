@@ -32,17 +32,17 @@ export default function HomeAdmin(props) {
                         </div>
                     </div>
                 </div>
-                {/* <div className='row g-1 my-1'>
+                <div className='row g-1 my-1'>
                     <div className='p-2' style={{ width: 400 }}>
                         <div style={{ height: 150 }} className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
                             <div>
-                                <h3 className='fs-2'>{props.countCustomers}</h3>
-                                <p className='fs-5'>Users</p>
+                                <h3 className='fs-2'>{props.countCity + " / " + props.countDepartment}</h3>
+                                <p className='fs-5'>Cities / Departments</p>
                             </div>
                             <i className='bi bi-people p-3 fs-1'></i>
                         </div>
                     </div>
-                </div> */}
+                </div>
                 <div className='row g-1 my-1'>
                     <div className='p-2' style={{ width: 400 }}>
                         <div style={{ height: 150 }} className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
