@@ -108,7 +108,6 @@ class CategoriesAdmin extends React.Component {
             .then(res => {
             })
         this.props.getCategories()
-        this.setEdit()
     }
     setEdit() {
         this.setState({ isEdit: !this.state.isEdit })
