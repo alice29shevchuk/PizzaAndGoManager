@@ -208,7 +208,6 @@ export default class EditOrder extends React.Component {
                               <input type='text' placeholder='Введите название продукта...' value={this.state.newIngredientName} onChange={(e) => this.setState({ newIngredientName: e.target.value })} />
                               <input type='number' readOnly={true} placeholder='Введите цену продукта...' value={this.state.newIngredientPrice} onChange={(e) => this.setState({ newIngredientPrice: e.target.value })} />
                               <input type='number' min={1} placeholder='Введите количество продукта...' value={this.state.newIngredientCount} onChange={(e) => this.updateCount(e.target.value)} />
-                              {/* <input type='text' placeholder='Введите соус для продукта...' value={this.state.newIngredientSauce} onChange={(e) => this.setState({ newIngredientSauce: e.target.value })} /> */}
                               <input type='number' readOnly={true} placeholder='Введите общую стоимость продукта...' value={this.state.newIngredientTotalPrice} onChange={(e) => this.setState({ newIngredientTotalPrice: e.target.value })} />
                               <p className='titleForAddIngredients'>Ингредиенты для добавления:</p>
                               {this.state.listPizza[this.state.indexForIng].ingredientsAdd.map((ingAdd, index) => (
@@ -274,7 +273,7 @@ export default class EditOrder extends React.Component {
         const updatedOrder = { ...prevState.order };
 
         // Находим продукт для обновления по индексу
-        const productToUpdate = updatedOrder.productsInOrders[prevState.indexForIng];
+        const productToUpdate = updatedOrder.productsInOrders[prevState.indexForCheckIng];// indexForCheckIng?
 
         if (productToUpdate) {
             productToUpdate.count = parseInt(count,10);
@@ -282,7 +281,7 @@ export default class EditOrder extends React.Component {
             let pizzaPrice = productToUpdate.price * count;
             productToUpdate.selectedIngredients.forEach((ing) => {
                 this.state.listPizza.forEach((pizza) => {
-                    if (pizza.title === productToUpdate.title) {
+                    if (pizza.title === productToUpdate.title && productToUpdate.identificator == this.state.indexForCheckIng) {//this.state.indexForIng
                         pizza.ingredientsAdd.forEach((ingAdd) => {
                             if (ing.title === ingAdd.name) {
                                 pizzaPrice += ingAdd.price*count;
@@ -307,11 +306,11 @@ setPriceIng(){
   var tempTotalPrice = 0;
 
   this.state.order.productsInOrders.map((product, index) =>{
-    if(product.id == this.state.order.productsInOrders[this.state.indexForIng].id){
+    if(product.identificator == this.state.order.productsInOrders[this.state.indexForCheckIng].identificator){//здесь было indexForIng
      tempTotalPrice = product.price * product.count;
      product.selectedIngredients.map((ing) => {
       this.state.listPizza.map((pizza)=>{
-        if(pizza.title == product.title && product.identificator == this.state.indexForIng){
+        if(pizza.title == product.title && product.identificator == this.state.indexForCheckIng){//this.state.indexForIng
           pizza.ingredientsAdd.map((ingAdd) => {
             if(ing.title == ingAdd.name){
               tempTotalPrice += ingAdd.price*product.count;
@@ -401,7 +400,7 @@ setPriceIng(){
     for(var i = 0; i< this.state.listPizza[this.state.indexForIng].ingredientsExcepts.length;i++){
       if(this.state.order.productsInOrders[this.state.indexForCheckIng] != undefined){
         for(var y = 0; y < this.state.order.productsInOrders[this.state.indexForCheckIng].excludedIngredients.length;y++){
-          if(this.state.order.productsInOrders[this.state.indexForCheckIng].excludedIngredients[y].title == ingredientName){
+          if(this.state.order.productsInOrders[this.state.indexForCheckIng].excludedIngredients[y].title == ingredientName && this.state.order.productsInOrders[this.state.indexForCheckIng].identificator == this.state.indexForCheckIng){
             return true;
           }
         }
@@ -433,7 +432,7 @@ setPriceIng(){
       const sauceName = this.state.listPizza[this.state.indexForIng].sauce;
       console.log(sauceName);  
       const updatedProductsInOrders = this.state.order.productsInOrders.map(product => {
-          if (product.title === this.state.listPizza[this.state.indexForIng].title) {
+          if (product.title === this.state.listPizza[this.state.indexForIng].title && product.identificator === this.state.indexForCheckIng) {
               return {
                   ...product,
                   selectedSauce: sauceName,
@@ -469,92 +468,6 @@ setPriceIng(){
     }
    return true;
 };
-
-  // handleIngredientAddCheckboxChange = (e, ingredientName) => {
-  //   const isChecked = e.target.checked;
-  //   console.log(isChecked);
-  //   const { indexForCheckIng, order } = this.state;
-
-  //   if(isChecked){
-  //     console.log("INDEX: " + this.state.indexForCheckIng);
-
-  //     const updatedProductsInOrders = order.productsInOrders.map(product => {
-  //       var idIng = 0;
-  //       var newProd = null;
-  //       var newIng = null;
-  //       if (product.title === this.state.listPizza[indexForCheckIng].title && product.identificator == this.state.indexForCheckIng) {
-  //         console.log("id prod: " + product.id + " id: " + this.state.order.productsInOrders[this.state.indexForIng].id);
-  //         // if(product.id == this.state.order.productsInOrders[this.state.indexForIng].id){
-           
-  //         // }
-  //         for(var i = 0;i< this.state.listPizza.length;i++){
-  //           for(var x = 0; x< this.state.listPizza[i].ingredientsAdd.length;x++){
-  //             if(this.state.listPizza[i].ingredientsAdd[x].name == ingredientName){
-  //               idIng = this.state.listPizza[i].ingredientsAdd[x].id;
-  //               newProd = this.state.order.productsInOrders[product.identificator];
-  //               newIng = new SelectedIngredient(0,this.state.listPizza[i].ingredientsAdd[x].title,this.state.listPizza[i].ingredientsAdd[x].productsInOrdersId);
-  //               // newProd.selectedIngredients = newIng;
-  //             }
-  //           }
-  //         }
-  //         return {
-  //           ...newProd,
-  //           selectedIngredients: [...product.selectedIngredients, {id:0, title: ingredientName,productsInOrdersId:product.id }]/////////tut
-  //           // selectedIngredients: [...product.selectedIngredients, newIng]
-  //         };         
-  //       }
-  //       product.selectedIngredients.map((ing) => {
-  //         console.log(ing.title);
-  //       })
-  //       return product;
-  //     });
-
-
-  //     this.setState(
-  //       (prevState) => ({
-  //         order: {
-  //           ...prevState.order,
-  //           productsInOrders: updatedProductsInOrders,
-  //         },
-  //       }),
-  //       () => {
-  //         this.setPriceIng();
-  //       }
-  //     );
-      
-  //     var newSelectIng = null;
-  //     this.state.listPizza.map((pizza)=>{
-  //        pizza.ingredientsAdd.map((ing)=>{
-  //         if(ing.name == ingredientName){
-  //          newSelectIng = ing;
-  //         }
-  //       })
-  //     })
-  //   }
-  //   else{
-  //     const updatedProductsInOrders = order.productsInOrders.map(product => {
-  //       if (product.title === this.state.listPizza[indexForCheckIng].title) {// здесб было indexForCheckIng
-  //         return {
-  //           ...product,
-  //           selectedIngredients: product.selectedIngredients.filter(ing => ing.title !== ingredientName)
-  //         };
-  //       }
-  //       return product;
-  //     });
-
-  //     this.setState(
-  //       (prevState) => ({
-  //         order: {
-  //           ...prevState.order,
-  //           productsInOrders: updatedProductsInOrders,
-  //         },
-  //       }),
-  //       () => {
-  //         this.setPriceIng();
-  //       }
-  //     );   
-  //   }
-  // };
 
 
   handleIngredientAddCheckboxChange = (e, ingredientName) => {
@@ -592,68 +505,43 @@ setPriceIng(){
         this.setPriceIng();
     });
 };
-
+  
 
   handleIngredientExceptCheckboxChange = (e, ingredientName) => {
     const isChecked = e.target.checked;
-    console.log(isChecked);
     const { indexForCheckIng, order } = this.state;
 
-    if(isChecked){
-
-      const updatedProductsInOrders = order.productsInOrders.map(product => {
-        var idIng = 0;
-        if (product.title === this.state.listPizza[this.state.indexForIng].title) {
-          for(var i = 0;i< this.state.listPizza.length;i++){
-            for(var x = 0; x< this.state.listPizza[i].ingredientsExcepts.length;x++){
-              if(this.state.listPizza[i].ingredientsExcepts[x].name == ingredientName){
-                idIng = this.state.listPizza[i].ingredientsExcepts[x].id;
-              }
+    const updatedProductsInOrders = order.productsInOrders.map((product, index) => {
+        if (product.identificator === indexForCheckIng && product.title === this.state.listPizza[this.state.indexForIng].title) {
+            if (isChecked) {
+                // Добавляем ингредиент к выбранной пицце
+                return {
+                    ...product,
+                    excludedIngredients: [
+                        ...product.excludedIngredients,
+                        { id: 0, title: ingredientName, productsInOrdersId: product.id }
+                    ]
+                };
+            } else {
+                // Удаляем ингредиент из выбранной пиццы
+                return {
+                    ...product,
+                    excludedIngredients: product.excludedIngredients.filter(ing => ing.title !== ingredientName)
+                };
             }
-          }
-          return {
-            ...product,
-            excludedIngredients: [...product.excludedIngredients, {id:0, title: ingredientName,productsInOrdersId:product.id }]/////////tut
-          };
         }
         return product;
-      });
-  
-      this.setState(prevState => ({
+    });
+
+    this.setState({
         order: {
-          ...prevState.order,
-          productsInOrders: updatedProductsInOrders,
+            ...order,
+            productsInOrders: updatedProductsInOrders,
         },
-      }));
-      var newSelectIng = null;
-      this.state.listPizza.map((pizza)=>{
-         pizza.ingredientsExcepts.map((ing)=>{
-          if(ing.name == ingredientName){
-           newSelectIng = ing;
-          }
-        })
-      })
-    }
-    else{
-      const updatedProductsInOrders = order.productsInOrders.map(product => {
-        if (product.title === this.state.listPizza[this.state.indexForCheckIng].title) {// здесь было indexForCheckIng
-          return {
-            ...product,
-            excludedIngredients: product.excludedIngredients.filter(ing => ing.title !== ingredientName)
-          };
-        }
-        return product;
-      });
-  
-      this.setState(prevState => ({
-        order: {
-          ...prevState.order,
-          productsInOrders: updatedProductsInOrders,
-        },
-      }));
-    }
-  };
-  
+    }, () => {
+        this.setPriceIng();
+    });
+};
 handleListIngredientsIsOpen=()=>{
     this.setState({
         isListIngredientsIsOpen:true,
@@ -743,12 +631,6 @@ handleAddNewProduct = () => {
             }
           }
         }
-      //  if(this.state.order.productsInOrders[i].selectedIngredients.length == pizzaForAdd.selectedIngredients.length){
-      //   this.state.order.productsInOrders[i].selectedIngredients.map((selIng) => {
-      //     console.log("in Sel ing: " +  pizzaForAdd.selectedIngredients.find((x) => x.title == selIng.title));
-      //     pizzaForAdd.selectedIngredients.find((x) => x.title == selIng.title);
-      //   })
-      //  }
       }
     }
     if(isAddNew){
@@ -884,7 +766,10 @@ handleEditIngredient = (index) => {
         newIngredientSauce: editedIngredientSauce,
         newIngredientTotalPrice:editedIngredientTotalPrice,
         indexForCheckIng: index
-    });
+    }, () => {
+      // После завершения setState вызываем setPriceIng для корректного отображения цены
+      this.setPriceIng();
+  });
 
     for(var i=0; i< this.state.listPizza.length;i++){
       if(this.state.listPizza[i].title ==  this.state.order.productsInOrders[index].title){
@@ -894,7 +779,7 @@ handleEditIngredient = (index) => {
       }
     }
     console.log(this.state.order);
-    this.setPriceIng();
+    // this.setPriceIng();
 };
 
 
@@ -902,81 +787,71 @@ handleEditIngredient = (index) => {
 // check edit product
 //
 handleSaveEditedIngredient = () => {
-    // const editedIngredients = [...this.state.order.productsInOrders];
-    // console.log(editedIngredients[this.state.editingIngredientIndex] );
-    // if(editedIngredients[this.state.editingIngredientIndex] != undefined){
-    //   editedIngredients[this.state.editingIngredientIndex].title = this.state.newIngredientName;
-    //   console.log("ok");
-    // }else{
-    //   console.log("not ok ");
+    const editedIngredients = [...this.state.order.productsInOrders];
+    console.log(editedIngredients[this.state.editingIngredientIndex] );
+    if(editedIngredients[this.state.editingIngredientIndex] != undefined){
+      editedIngredients[this.state.editingIngredientIndex].title = this.state.newIngredientName;
+      console.log("ok");
+    }else{
+      console.log("not ok ");
+    }
+
+    // const updateproduct = this.state.order.productsInOrders[this.state.editingIngredientIndex];
+    // var countExIng = 0;
+    // var countSelIng = 0;
+
+    // var isUpdateOldProduct = false;
+
+    // for(var i =0;i < this.state.order.productsInOrders.length; i++){
+    //   countExIng = 0;
+    //   countSelIng = 0;
+    //   if(this.state.order.productsInOrders[i].title == updateproduct.title && this.state.order.productsInOrders[i].id == updateproduct.id){
+    //     console.log("I id: " + this.state.order.productsInOrders[i].id + " up id: " + updateproduct.id);
+    //     console.log("i ing: " + this.state.order.productsInOrders[i].selectedIngredients.length + " up ing: " + updateproduct.selectedIngredients.length);
+    //     if(this.state.order.productsInOrders[i].selectedIngredients.length == updateproduct.selectedIngredients.length){
+    //       if(this.state.order.productsInOrders[i].excludedIngredients.length == updateproduct.excludedIngredients.length){
+    //         if(this.state.order.productsInOrders[i].selectedSauce == updateproduct.selectedSauce){
+    //           //
+    //           //  check all ing
+    //           //
+    //          this.state.order.productsInOrders[i].selectedIngredients.map((ing) => {
+    //           for(var x = 0; x < updateproduct.selectedIngredients.length;x++){
+    //             if(ing.title == updateproduct.selectedIngredients[x].title){
+    //               countSelIng +=1;
+    //             }
+    //           }
+    //          })
+
+    //          this.state.order.productsInOrders[i].excludedIngredients.map((ing) => {
+    //           for(var x = 0; x < updateproduct.excludedIngredients.length;x++){
+    //             if(ing.title == updateproduct.excludedIngredients[x].title){
+    //               countExIng +=1;
+    //             }
+    //           }
+    //          })
+
+    //          if(countSelIng == this.state.order.productsInOrders[i].selectedIngredients.length && countExIng == this.state.order.productsInOrders[i].excludedIngredients.length){
+    //           console.log("Not bad!");
+    //           console.log("i" + i);
+    //           isUpdateOldProduct = true;
+    //           console.log(updateproduct.selectedIngredients);
+    //          }
+
+    //         }
+    //       }
+    //     }  
+    //   }
     // }
 
-    const updateproduct = this.state.order.productsInOrders[this.state.editingIngredientIndex];
-    var countExIng = 0;
-    var countSelIng = 0;
-
-    var isUpdateOldProduct = false;
-
-    for(var i =0;i < this.state.order.productsInOrders.length; i++){
-      countExIng = 0;
-      countSelIng = 0;
-      if(this.state.order.productsInOrders[i].title == updateproduct.title && this.state.order.productsInOrders[i].id == updateproduct.id){
-        console.log("I id: " + this.state.order.productsInOrders[i].id + " up id: " + updateproduct.id);
-        console.log("i ing: " + this.state.order.productsInOrders[i].selectedIngredients.length + " up ing: " + updateproduct.selectedIngredients.length);
-        if(this.state.order.productsInOrders[i].selectedIngredients.length == updateproduct.selectedIngredients.length){
-          if(this.state.order.productsInOrders[i].excludedIngredients.length == updateproduct.excludedIngredients.length){
-            if(this.state.order.productsInOrders[i].selectedSauce == updateproduct.selectedSauce){
-              //
-              //  check all ing
-              //
-             this.state.order.productsInOrders[i].selectedIngredients.map((ing) => {
-              for(var x = 0; x < updateproduct.selectedIngredients.length;x++){
-                if(ing.title == updateproduct.selectedIngredients[x].title){
-                  countSelIng +=1;
-                }
-              }
-             })
-
-             this.state.order.productsInOrders[i].excludedIngredients.map((ing) => {
-              for(var x = 0; x < updateproduct.excludedIngredients.length;x++){
-                if(ing.title == updateproduct.excludedIngredients[x].title){
-                  countExIng +=1;
-                }
-              }
-             })
-
-             if(countSelIng == this.state.order.productsInOrders[i].selectedIngredients.length && countExIng == this.state.order.productsInOrders[i].excludedIngredients.length){
-              console.log("Not bad!");
-              console.log("i" + i);
-              isUpdateOldProduct = true;
-              console.log(updateproduct.selectedIngredients);
-             }
-
-            }
-          }
-        }  
-      }
-    }
-
-    if(isUpdateOldProduct){
-       //
-      //  update old (set count)
-      //
-    }else{
-      //
-      //  update this prod
-      //
-    }
-
-    // this.setState({
-    //     order: {
-    //         ...this.state.order,
-    //         productsInOrders: editedIngredients,
-    //     },
-    //     isEditingIngredient: false,
-    //     newIngredientName: '',
-    //     editingIngredientIndex: null,
-    // });
+    this.setState({
+        order: {
+            ...this.state.order,
+            productsInOrders: editedIngredients,
+        },
+        isEditingIngredient: false,
+        newIngredientName: '',
+        editingIngredientIndex: null,
+    });
 };
 handleSaveEditedIngredientAdd = () => {
   const editedIngredients = [...this.state.pizza.ingredientsAdd];
@@ -1046,20 +921,35 @@ async Editproduct(){
         .then(res => {
     })
     var newTotal = 0;
-    this.state.order.productsInOrders.map((product) => { 
-     this.state.listPizza.map((pizza)=>{
-      if(product.title == pizza.title){
-        newTotal += (product.price * product.count);
-        product.selectedIngredients.map((ing) => {
-          pizza.ingredientsAdd.map((ingAdd) => {
-            if(ing.productsInOrdersId == ingAdd.pizzaId){
-              newTotal += (ingAdd.price * product.count);
+    // this.state.order.productsInOrders.map((product) => { 
+    //  this.state.listPizza.map((pizza)=>{
+    //   if(product.title == pizza.title){
+    //     newTotal += (product.price * product.count);
+    //     product.selectedIngredients.map((ing) => {
+    //       pizza.ingredientsAdd.map((ingAdd) => {
+    //         if(ing.title == ingAdd.title){
+    //           newTotal += (ingAdd.price * product.count);
+    //         }
+    //       })
+    //     })
+    //   }
+    //  });
+    // });
+
+    for(var i =0 ;i < this.state.order.productsInOrders.length; i++){
+      for(var y = 0; y < this.state.listPizza.length;y++){
+        if(this.state.order.productsInOrders[i].title == this.state.listPizza[y].title){
+          newTotal += (this.state.order.productsInOrders[i].price * this.state.order.productsInOrders[i].count)
+          for(var x = 0; x < this.state.order.productsInOrders[i].selectedIngredients.length; x++){
+            for(var z = 0;z < this.state.listPizza[y].ingredientsAdd.length;z++){
+              if(this.state.order.productsInOrders[i].selectedIngredients[x].title == this.state.listPizza[y].ingredientsAdd[z].name){
+                newTotal += (this.state.listPizza[y].ingredientsAdd[z].price * this.state.order.productsInOrders[i].count)
+              }
             }
-          })
-        })
+          }
+        }
       }
-     });
-    });
+    }
     console.log(newTotal);
     this.props.UpdateOrder(this.state.order.id,this.state.order.idUser,this.state.order.numberOfOrder,this.state.order.name,this.state.order.email,this.state.order.orderData,this.state.order.phoneNumber,newTotal,this.state.order.paymentMethod,this.state.order.city,this.state.order.department,this.state.order.comment,this.state.order.isDone,this.state.order.productsInOrders);
     this.props.isShow();
