@@ -170,7 +170,7 @@ export default class ProductsAdmin extends React.Component {
                     </div>
                     <DataTable title='Pizzas' columns={this.state.columns} data={this.state.records} fixedHeader pagination actions={<button onClick={() => { this.isShow() }} className='btn btn-success'>Add</button>}></DataTable>
                     {this.state.addProduct && <AddProduct dataProduct={this.state.records} AddProduct={this.AddProduct} dataCategory={this.props.dataCategory} isShow={this.isShow} />}
-                {this.state.isEdit && <EditProduct updateProduct={this.updateProduct} getProducts={this.props.getProducts} id={this.state.id} img={this.state.img} title={this.state.title} weight={this.state.weight} price={this.state.price} category={this.state.category} rating={this.state.rating} sauce={this.state.sauce} ingredients={this.state.ingredients} ingredientsAdd={this.state.ingredientsAdd} ingredientsExcept={this.state.ingredientsExcept} isPopular={this.state.popular} dataCategory={this.props.dataCategory} isShow={this.isEdit}/>}
+                    {this.state.isEdit && <EditProduct updateProduct={this.updateProduct} getProducts={this.props.getProducts} id={this.state.id} img={this.state.img} title={this.state.title} weight={this.state.weight} price={this.state.price} category={this.state.category} rating={this.state.rating} sauce={this.state.sauce} ingredients={this.state.ingredients} ingredientsAdd={this.state.ingredientsAdd} ingredientsExcept={this.state.ingredientsExcept} isPopular={this.state.popular} dataCategory={this.props.dataCategory} isShow={this.isEdit}/>}
                 </div>
             </div>
         )

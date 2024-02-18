@@ -9,6 +9,7 @@ import CategoriesAdmin from '../components/CategoriesAdmin'
 import CitiesAdmin from '../components/CitiesAdmin'
 import OrdersAdmin from '../components/OrdersAdmin'
 import ProductsAdmin from '../components/ProductsAdmin'
+import FeedbacksAdmin from '../components/FeedbacksAdmin';
 
 export default function AdminPage() {
   const [toggle, setTogle] = useState(true)
@@ -18,6 +19,7 @@ export default function AdminPage() {
   const [countDepartment, setCountDepartment] = useState(0)
   const [countCategories, setCountCategories] = useState(0)
   const [countOrders, setCountOrders] = useState(0)
+  const [countFeedbacks, setCountFeedbacks] = useState(0)
   const [isAuthoriseAdmin, setIsAuthoriseAdmin] = useState(false)
   const [idProductNow, setIdProductNow] = useState(0)
   const [idCategoryNow, setIdCategoryNow] = useState(0)
@@ -27,6 +29,7 @@ export default function AdminPage() {
   const [dataCity,setDataCity] = useState([]);
   const [dataDepartment,setDataDepartment] = useState([]);
   const [dataOrders,setDaataOrders] = useState([]);
+  const [dataFeedbacks,setFeedbacks] = useState([]);
 
 
   const Toggle = () => {
@@ -42,6 +45,7 @@ export default function AdminPage() {
     getProducts()
     getCategories()
     getOrders()
+    getFeedbacks()
     // getAdmin()
     // setTimeout(checkAdmin,1);
   }, [])
@@ -95,6 +99,17 @@ export default function AdminPage() {
         return rest
       })
   }
+  async function getFeedbacks(){
+    await axios.get(`http://alisa000077-001-site1.htempurl.com/api/FeedBack/GetFeedBacks`)
+      .then(res => {
+        const rest =  res.data;
+        // console.log(res.data);
+        setCountFeedbacks(rest.length)
+        setFeedbacks(rest)
+        console.log(rest);
+        return rest
+      })
+  }
   return (
     <div>
         <div className='container-fluid bg-secondary min-vh-100'>
@@ -108,11 +123,12 @@ export default function AdminPage() {
               <div style={{ height: 50 }} className='col-4 col-md-2'></div>
             }
             <div className='col'>
-              {idCat === 1 &&<HomeAdmin countCategories={countCategories} countCity={countCity} countDepartment={countDepartment} countOrders={countOrders} countProducts={countProducts} Toggle={Toggle} />}
+              {idCat === 1 &&<HomeAdmin countCategories={countCategories} countCity={countCity} countDepartment={countDepartment} countOrders={countOrders} countProducts={countProducts} countFeedbacks={countFeedbacks} Toggle={Toggle} />}
               {idCat === 2 &&<CategoriesAdmin idCategoryNow={idCategoryNow} getCategories={getCategories}  Toggle={Toggle} dataCategories={dataCategories}/>}
               {idCat === 3 && <ProductsAdmin idProductNow={idProductNow} getProducts={getProducts} data={dataProduct} dataCategory={dataCategories}  Toggle={Toggle}/>}
               {idCat === 4 && <CitiesAdmin dataCity={dataCity} getCity={getCity} dataDepartment={dataDepartment} getDepartment={getDepartment} Toggle={Toggle}/>}
               {idCat === 5 &&  <OrdersAdmin data={dataOrders} updateOrders={getOrders}  Toggle={Toggle}/>}
+              {idCat === 6 &&  <FeedbacksAdmin dataFeedbacks={dataFeedbacks} getFeedbacks={getFeedbacks}  Toggle={Toggle}/>}
             </div>
           </div>
         </div>

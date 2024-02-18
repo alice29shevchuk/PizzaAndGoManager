@@ -31,10 +31,10 @@ export default function Sidebar({ChooiceCat}) {
                 <i className='bi bi-basket3-fill fs-5 me-3'></i>
                 <span >Orders</span>
             </a>
-            {/* <a className='list-group-item py-2 my-1' onClick={()=>{sessionStorage.clear(); window.location.assign('/')}}>
+            <a className='list-group-item py-2 my-1' onClick={()=>{ChooiceCat(6)}}>
                 <i className='bi bi-power fs-5 me-3'></i>
-                <span >Logout</span>
-            </a> */}
+                <span >Feedbacks</span>
+            </a>
         </div>
     </div>
   )

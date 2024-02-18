@@ -54,6 +54,17 @@ export default function HomeAdmin(props) {
                         </div>
                     </div>
                 </div>
+                <div className='row g-1 my-1'>
+                    <div className='p-2' style={{ width: 400 }}>
+                        <div style={{ height: 150 }} className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
+                            <div>
+                                <h3 className='fs-2'>{props.countFeedbacks}</h3>
+                                <p className='fs-5'>Feedbacks</p>
+                            </div>
+                            <i className='bi bi-pencil p-3 fs-1'></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
