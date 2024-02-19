@@ -45,8 +45,9 @@ export default class EditOrder extends React.Component {
             isListIngredientsAddIsOpen:false,
 
             listPizza:[],
+            listCombo:[],
             newPizzaInOrder:0,
-            indexForIng:0,
+            indexForIng:-1,//changes
             indexForCheckIng: 0,
 
             cities:[],
@@ -82,6 +83,16 @@ export default class EditOrder extends React.Component {
           .catch(error => {
             console.error('Error fetching pizzas:', error);
         });
+
+        axios.get(`http://alisa000077-001-site1.htempurl.com/api/Pizza/GetCombo`)
+        .then(res => {
+          const pizzas = res.data;
+
+          this.setState({listCombo:pizzas});
+        })
+        .catch(error => {
+          console.error('Error fetching pizzas:', error);
+      });
 
         axios.get('http://alisa000077-001-site1.htempurl.com/api/City/GetCityes') 
         .then(result => {
@@ -209,27 +220,37 @@ export default class EditOrder extends React.Component {
                               <input type='number' readOnly={true} placeholder='Введите цену продукта...' value={this.state.newIngredientPrice} onChange={(e) => this.setState({ newIngredientPrice: e.target.value })} />
                               <input type='number' min={1} placeholder='Введите количество продукта...' value={this.state.newIngredientCount} onChange={(e) => this.updateCount(e.target.value)} />
                               <input type='number' readOnly={true} placeholder='Введите общую стоимость продукта...' value={this.state.newIngredientTotalPrice} onChange={(e) => this.setState({ newIngredientTotalPrice: e.target.value })} />
-                              <p className='titleForAddIngredients'>Ингредиенты для добавления:</p>
-                              {this.state.listPizza[this.state.indexForIng].ingredientsAdd.map((ingAdd, index) => (
-                              <div key={index} className="checkbox-container" >
-                                <input className='checkbox-input' type="checkbox" value={ingAdd.name} checked={this.isIngredientSelected(ingAdd.name)} onChange={(e) => this.handleIngredientAddCheckboxChange(e, ingAdd.name)}/>
-                                <label className="checkbox-label">{ingAdd.name}</label>
-                              </div>
-                              ))}
-
-                              <p className='titleForAddIngredients'>Ингредиенты для исключения:</p>
-                              {this.state.listPizza[this.state.indexForIng].ingredientsExcepts.map((ingExcept, index) => (
-                                <div key={index} className="checkbox-container" >
-                                  <input className='checkbox-input' type="checkbox" value={ingExcept.name} checked={this.isIngredientExceptSelected(ingExcept.name)} onChange={(e) => this.handleIngredientExceptCheckboxChange(e, ingExcept.name)}/>
-                                  <label  className="checkbox-label">{ingExcept.name}</label>
+                              {this.state.indexForIng >= 0 &&
+                                <div>
+                                  <p className='titleForAddIngredients'>Ингредиенты для добавления:</p>
+                                  {this.state.listPizza[this.state.indexForIng].ingredientsAdd.map((ingAdd, index) => (
+                                  <div key={index} className="checkbox-container" >
+                                    <input className='checkbox-input' type="checkbox" value={ingAdd.name} checked={this.isIngredientSelected(ingAdd.name)} onChange={(e) => this.handleIngredientAddCheckboxChange(e, ingAdd.name)}/>
+                                    <label className="checkbox-label">{ingAdd.name}</label>
+                                  </div>
+                                  ))}
                                 </div>
-                              ))}
-                              <p className='titleForAddIngredients'>Соус:</p>
-                              <div className="checkbox-container" >
-                                {/* <input className='checkbox-input' type="checkbox" value={this.state.listPizza[this.state.indexForIng].sauce} checked={this.isSauceSelected(this.state.listPizza[this.state.indexForIng].sauce)} onChange={(e) => this.handleChangeSauce(e)}/> */}
-                                <input className='checkbox-input' type="checkbox" value={this.state.listPizza[this.state.indexForIng].sauce} checked={this.state.sauceChecked} onChange={(e) => this.handleChangeSauce(e)}/>
-                                <label  className="checkbox-label">{this.state.listPizza[this.state.indexForIng].sauce}</label>
-                              </div>
+                              }
+                              {this.state.indexForIng >= 0 && 
+                                <div>
+                                  <p className='titleForAddIngredients'>Ингредиенты для исключения:</p>
+                                  {this.state.listPizza[this.state.indexForIng].ingredientsExcepts.map((ingExcept, index) => (
+                                    <div key={index} className="checkbox-container" >
+                                      <input className='checkbox-input' type="checkbox" value={ingExcept.name} checked={this.isIngredientExceptSelected(ingExcept.name)} onChange={(e) => this.handleIngredientExceptCheckboxChange(e, ingExcept.name)}/>
+                                      <label  className="checkbox-label">{ingExcept.name}</label>
+                                    </div>
+                                  ))}
+                                </div>
+                              }
+                              {this.state.indexForIng >= 0 &&
+                                <div>
+                                  <p className='titleForAddIngredients'>Соус:</p>
+                                  <div className="checkbox-container" >
+                                    <input className='checkbox-input' type="checkbox" value={this.state.listPizza[this.state.indexForIng].sauce} checked={this.state.sauceChecked} onChange={(e) => this.handleChangeSauce(e)}/>
+                                    <label  className="checkbox-label">{this.state.listPizza[this.state.indexForIng].sauce}</label>
+                                  </div>
+                                </div> 
+                              }
                               <button className="buttonSave" onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
                                   {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
                               </button>
@@ -767,19 +788,24 @@ handleEditIngredient = (index) => {
         newIngredientTotalPrice:editedIngredientTotalPrice,
         indexForCheckIng: index
     }, () => {
-      // После завершения setState вызываем setPriceIng для корректного отображения цены
       this.setPriceIng();
   });
-
+console.log('combo len = '+this.state.listCombo.length);
     for(var i=0; i< this.state.listPizza.length;i++){
       if(this.state.listPizza[i].title ==  this.state.order.productsInOrders[index].title){
-        this.setState({indexForIng: i});
-        this.isSauceSelected(this.state.order.productsInOrders[i].selectedSauce);
-        console.log('indexForIng='+this.state.indexForIng);
+          this.setState({indexForIng: i});
+          this.isSauceSelected(this.state.order.productsInOrders[i].selectedSauce);
       }
+      this.state.listCombo.map((pizza) => {
+        const titleCombo = pizza.title.split('-'); 
+        console.log("Title: " + this.state.order.productsInOrders[index].title);
+        if(this.state.order.productsInOrders[index].title == titleCombo[0]){
+          this.setState({indexForIng: -1});
+          console.log('listCombo in');
+          return;
+        }
+      })
     }
-    console.log(this.state.order);
-    // this.setPriceIng();
 };
 
 
@@ -950,6 +976,17 @@ async Editproduct(){
         }
       }
     }
+    this.state.order.productsInOrders.forEach((product) => {
+      this.state.listCombo.forEach((combo) => {
+        const comboTitle = combo.title.split('-');
+        if(product.title == comboTitle[0]){
+          console.log('combo.price= '+ combo.price);
+          console.log('product.count= ' + product.count);
+          newTotal += (combo.price * product.count);
+        }
+      })
+    });
+   
     console.log(newTotal);
     this.props.UpdateOrder(this.state.order.id,this.state.order.idUser,this.state.order.numberOfOrder,this.state.order.name,this.state.order.email,this.state.order.orderData,this.state.order.phoneNumber,newTotal,this.state.order.paymentMethod,this.state.order.city,this.state.order.department,this.state.order.comment,this.state.order.isDone,this.state.order.productsInOrders);
     this.props.isShow();

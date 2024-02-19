@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
+import { faPizzaSlice,faCity,faComment,faDashboard,faListCheck } from '@fortawesome/free-solid-svg-icons';
 export default function Sidebar({ChooiceCat}) {
   return (
     <div className='bg-white sidebar p-2'>
@@ -10,21 +10,25 @@ export default function Sidebar({ChooiceCat}) {
         </div>
         <hr className='text-dark'></hr>
         <div className='list-group list-group-flush'>
-            {/* Компоненты меню  */}
             <a className='list-group-item py-2 my-1' onClick={()=>{ChooiceCat(1)}}>
-                <i className='bi bi-speedometer2 fs-5 me-3'></i>
+                <FontAwesomeIcon icon={faDashboard} className='me-3 fs-5' />
                 <span>Dashboard</span>
             </a>
             <a className='list-group-item py-2 my-1' onClick={()=>{ChooiceCat(2)}}>
-                <i className='bi bi-card-checklist fs-5 me-3'></i>
+                <FontAwesomeIcon icon={faListCheck} className='me-3 fs-5' />
                 <span>Categories</span>
             </a>
             <a className='list-group-item py-2 my-1'  onClick={()=>{ChooiceCat(3)}}>
-                <i className='bi bi-table fs-5 me-3'></i>
+                <FontAwesomeIcon icon={faPizzaSlice} className='fs-5 me-3' />
                 <span >Pizzas</span>
             </a>
+            {/* combo */}
+            <a className='list-group-item py-2 my-1'  onClick={()=>{ChooiceCat(7)}}>
+                <FontAwesomeIcon icon={faPizzaSlice} className='fs-5 me-3' />
+                <span >Combo Pizzas</span>
+            </a>
             <a className='list-group-item py-2 my-1'  onClick={()=>{ChooiceCat(4)}}>
-                <i className='bi bi-people fs-5 me-3'></i>
+                <FontAwesomeIcon icon={faCity} className='fs-6 me-3' />
                 <span >Cities / Departments</span>
             </a>
             <a className='list-group-item py-2 my-1'  onClick={()=>{ChooiceCat(5)}}>
@@ -32,7 +36,7 @@ export default function Sidebar({ChooiceCat}) {
                 <span >Orders</span>
             </a>
             <a className='list-group-item py-2 my-1' onClick={()=>{ChooiceCat(6)}}>
-                <i className='bi bi-power fs-5 me-3'></i>
+                <FontAwesomeIcon icon={faComment} className='fs-5 me-3' />
                 <span >Feedbacks</span>
             </a>
         </div>

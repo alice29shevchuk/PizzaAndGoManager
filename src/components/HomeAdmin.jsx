@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Nav from './Nav'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
+import { faPizzaSlice,faCity,faComment,faListCheck } from '@fortawesome/free-solid-svg-icons';
 export default function HomeAdmin(props) {
 
     return (
@@ -16,7 +16,18 @@ export default function HomeAdmin(props) {
                                 <h3 className='fs-2'>{props.countProducts}</h3>
                                 <p className='fs-5'>Pizzas</p>
                             </div>
-                            {/* <i className='bi bi-table p-3 fs-1'></i> */}
+                            <FontAwesomeIcon icon={faPizzaSlice} className='p-3 fs-1' />
+                        </div>
+                    </div>
+                </div>
+                {/* combo */}
+                <div className='row g-1 my-1'>
+                    <div className='p-2' style={{ width: 400 }}>
+                        <div style={{ height: 150 }} className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
+                            <div>
+                                <h3 className='fs-2'>{props.countComboPizzas}</h3>
+                                <p className='fs-5'>Combo pizzas</p>
+                            </div>
                             <FontAwesomeIcon icon={faPizzaSlice} className='p-3 fs-1' />
                         </div>
                     </div>
@@ -28,7 +39,7 @@ export default function HomeAdmin(props) {
                                 <h3 className='fs-2'>{props.countCategories}</h3>
                                 <p className='fs-5'>Categories</p>
                             </div>
-                            <i className='bi bi-card-checklist p-3 fs-1'></i>
+                            <FontAwesomeIcon icon={faListCheck} className='p-3 fs-1' />
                         </div>
                     </div>
                 </div>
@@ -39,7 +50,7 @@ export default function HomeAdmin(props) {
                                 <h3 className='fs-2'>{props.countCity + " / " + props.countDepartment}</h3>
                                 <p className='fs-5'>Cities / Departments</p>
                             </div>
-                            <i className='bi bi-people p-3 fs-1'></i>
+                            <FontAwesomeIcon icon={faCity} className='p-3 fs-1' />
                         </div>
                     </div>
                 </div>
@@ -61,7 +72,7 @@ export default function HomeAdmin(props) {
                                 <h3 className='fs-2'>{props.countFeedbacks}</h3>
                                 <p className='fs-5'>Feedbacks</p>
                             </div>
-                            <i className='bi bi-pencil p-3 fs-1'></i>
+                            <FontAwesomeIcon icon={faComment} className='p-3 fs-1' />
                         </div>
                     </div>
                 </div>

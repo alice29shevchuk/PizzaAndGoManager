@@ -10,6 +10,7 @@ import CitiesAdmin from '../components/CitiesAdmin'
 import OrdersAdmin from '../components/OrdersAdmin'
 import ProductsAdmin from '../components/ProductsAdmin'
 import FeedbacksAdmin from '../components/FeedbacksAdmin';
+import ComboPizzasAdmin from '../components/ComboPizzasAdmin';
 
 export default function AdminPage() {
   const [toggle, setTogle] = useState(true)
@@ -20,6 +21,7 @@ export default function AdminPage() {
   const [countCategories, setCountCategories] = useState(0)
   const [countOrders, setCountOrders] = useState(0)
   const [countFeedbacks, setCountFeedbacks] = useState(0)
+  const [countComboPizzas, setCountComboPizzas] = useState(0)
   const [isAuthoriseAdmin, setIsAuthoriseAdmin] = useState(false)
   const [idProductNow, setIdProductNow] = useState(0)
   const [idCategoryNow, setIdCategoryNow] = useState(0)
@@ -30,6 +32,7 @@ export default function AdminPage() {
   const [dataDepartment,setDataDepartment] = useState([]);
   const [dataOrders,setDaataOrders] = useState([]);
   const [dataFeedbacks,setFeedbacks] = useState([]);
+  const [dataComboPizzas,setDataComboPizzas] = useState([]);
 
 
   const Toggle = () => {
@@ -37,7 +40,6 @@ export default function AdminPage() {
   }
   const ChooiceCat = (id) => {
     setIdCat(id)
-    // console.log(id)
   }
   useEffect(() => {
     getCity()
@@ -46,8 +48,7 @@ export default function AdminPage() {
     getCategories()
     getOrders()
     getFeedbacks()
-    // getAdmin()
-    // setTimeout(checkAdmin,1);
+    getComboPizzas()
   }, [])
   const getCity = () => {
     axios.get(`http://alisa000077-001-site1.htempurl.com/api/City/GetCityes`)
@@ -103,16 +104,24 @@ export default function AdminPage() {
     await axios.get(`http://alisa000077-001-site1.htempurl.com/api/FeedBack/GetFeedBacks`)
       .then(res => {
         const rest =  res.data;
-        // console.log(res.data);
         setCountFeedbacks(rest.length)
         setFeedbacks(rest)
-        console.log(rest);
+        return rest
+      })
+  }
+  async function getComboPizzas(){
+    await axios.get(`http://alisa000077-001-site1.htempurl.com/api/Pizza/GetCombo`)
+      .then(res => {
+        const rest =  res.data;
+        console.log('combo pizzas'+res.data);
+        setCountComboPizzas(rest.length)
+        setDataComboPizzas(rest)
         return rest
       })
   }
   return (
     <div>
-        <div className='container-fluid bg-secondary min-vh-100'>
+        <div className='container-fluid bg-warning min-vh-100'>
           <div className='row'>
             {toggle &&
               <div className='col-4 col-md-2 bg-white vh-100 position-fixed'>
@@ -123,12 +132,13 @@ export default function AdminPage() {
               <div style={{ height: 50 }} className='col-4 col-md-2'></div>
             }
             <div className='col'>
-              {idCat === 1 &&<HomeAdmin countCategories={countCategories} countCity={countCity} countDepartment={countDepartment} countOrders={countOrders} countProducts={countProducts} countFeedbacks={countFeedbacks} Toggle={Toggle} />}
+              {idCat === 1 &&<HomeAdmin countCategories={countCategories} countCity={countCity} countDepartment={countDepartment} countOrders={countOrders} countProducts={countProducts} countFeedbacks={countFeedbacks} countComboPizzas={countComboPizzas} Toggle={Toggle} />}
               {idCat === 2 &&<CategoriesAdmin idCategoryNow={idCategoryNow} getCategories={getCategories}  Toggle={Toggle} dataCategories={dataCategories}/>}
               {idCat === 3 && <ProductsAdmin idProductNow={idProductNow} getProducts={getProducts} data={dataProduct} dataCategory={dataCategories}  Toggle={Toggle}/>}
               {idCat === 4 && <CitiesAdmin dataCity={dataCity} getCity={getCity} dataDepartment={dataDepartment} getDepartment={getDepartment} Toggle={Toggle}/>}
               {idCat === 5 &&  <OrdersAdmin data={dataOrders} updateOrders={getOrders}  Toggle={Toggle}/>}
               {idCat === 6 &&  <FeedbacksAdmin dataFeedbacks={dataFeedbacks} getFeedbacks={getFeedbacks}  Toggle={Toggle}/>}
+              {idCat === 7 &&  <ComboPizzasAdmin dataComboPizzas={dataComboPizzas} getComboPizzas={getComboPizzas}  Toggle={Toggle}/>}
             </div>
           </div>
         </div>
