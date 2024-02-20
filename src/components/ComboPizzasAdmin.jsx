@@ -5,6 +5,7 @@ import AddProduct from './AddProducts'
 import EditProduct from './EditProduct'
 import axios from 'axios'
 import AddComboProduct from './AddComboProduct'
+import EditComboProduct from './EditComboProduct'
 
 export default class ComboPizzasAdmin extends React.Component {
     constructor(props) {
@@ -103,14 +104,14 @@ export default class ComboPizzasAdmin extends React.Component {
                     </div>
                     <DataTable title='Combo Pizzas' columns={this.state.columns} data={this.state.records} fixedHeader pagination actions={<button onClick={() => { this.isShow() }} className='btn btn-success'>Add</button>}></DataTable>
                     {this.state.addProduct && <AddComboProduct dataProduct={this.state.records} AddProduct={this.AddProduct} dataComboPizzas={this.props.dataComboPizzas} isShow={this.isShow} />}
-                    {this.state.isEdit && <EditProduct updateProduct={this.updateProduct} getProducts={this.props.getProducts} id={this.state.id} img={this.state.img} title={this.state.title} weight={this.state.weight} price={this.state.price} category={this.state.category} rating={this.state.rating} sauce={this.state.sauce} ingredients={this.state.ingredients} ingredientsAdd={this.state.ingredientsAdd} ingredientsExcept={this.state.ingredientsExcept} isPopular={this.state.popular} dataCategory={this.props.dataCategory} isShow={this.isEdit}/>}
+                    {this.state.isEdit && <EditComboProduct updateProduct={this.updateProduct} getProducts={this.props.getProducts} id={this.state.id} img={this.state.img} title={this.state.title} weight={this.state.weight} price={this.state.price} category={this.state.category} rating={this.state.rating} sauce={this.state.sauce} ingredients={this.state.ingredients} ingredientsAdd={this.state.ingredientsAdd} ingredientsExcept={this.state.ingredientsExcept} isPopular={this.state.popular} dataComboPizzas={this.props.dataComboPizzas} isShow={this.isEdit}/>}
                 </div>
             </div>
         )
     }
     handleFilter(event) {
-        const newDate = this.props.data.filter(row => {
-            return row.title.toLowerCase().includes(event.target.value.toLowerCase()) || row.title.toLowerCase().includes(event.target.value.toLowerCase())
+        const newDate = this.props.dataComboPizzas.filter(row => {
+            return row.title.split('-')[0].toLowerCase().includes(event.target.value.toLowerCase()) || row.title.toLowerCase().includes(event.target.value.toLowerCase())
         })
         this.setState({ records: newDate })
     }
@@ -137,10 +138,10 @@ export default class ComboPizzasAdmin extends React.Component {
         }
         console.log(this.state.records);
     }
-    AddProduct(id_, imageUrl, title, weight, price) {
+    AddProduct(id, imageUrl, title, weight, price) {
         this.props.getComboPizzas()
         setTimeout(() => {
-            const id = this.props.idProductNow
+            console.log("IDAdmin: " + id);
             const mas = [...this.state.records]
             mas.splice(this.state.records.length, 1, { id, imageUrl, title, weight, price})
             this.setState({ records: mas })

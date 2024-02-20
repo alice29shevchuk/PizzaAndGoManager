@@ -11,7 +11,7 @@ export default class AddComboProduct extends React.Component {
     this.state = {
         pizza:new Pizza(
           0,
-          "",
+          "https://static-00.iconduck.com/assets.00/pizza-icon-2048x2048-vk14rowe.png", //здесь было пусто
           "",
           0,
           -1,
@@ -23,6 +23,11 @@ export default class AddComboProduct extends React.Component {
           [],
           true
         ),
+        errorImageUrl:false,
+        errorTitle:true,
+        errorDesc:true,
+        errorWeight:true,
+        errorPrice:true,
         title:'',
         description:'',
         newIngredientName: '', 
@@ -55,28 +60,159 @@ export default class AddComboProduct extends React.Component {
         <div>
           <h3>Add Product</h3>
           <div className='add-product'>
-            {this.state.pizza.imageUrl ? (
-                <img src={this.state.pizza.imageUrl} alt="photo" />):(<img src={this.state.baseImage} alt="photo" />)
-            }
-             <input type='text' min={200} max={800} placeholder='Image...' value={this.state.pizza.imageUrl}onChange={(e) => this.setState(prevState => ({
+            {/* {this.state.pizza.imageUrl ? (
+                <img src={this.state.pizza.imageUrl} alt="combo pizza" onLoad={(e)=>{this.handleImageLoad(e)}} onError={(e)=>{this.handleImageError(e)}} />):(<img src={this.state.baseImage} alt=" combo pizza" />)
+            } */}
+            <img src={this.state.pizza.imageUrl} alt='combo pizza' onLoad={(e)=>{this.handleImageLoad(e)}} onError={(e)=>{this.handleImageError(e)}}></img>
+            <input type='text' placeholder='Image...' value={this.state.pizza.imageUrl}onChange={(e) => this.setState(prevState => ({
             pizza: {
                 ...prevState.pizza,
                 imageUrl: e.target.value
             }}))}></input>
-            <input type='text' placeholder='Title...' value={this.state.title} onChange={(e) => this.setState({title: e.target.value})}></input>
-            <input type='text' placeholder='Description...' value={this.state.description} onChange={(e) => this.setState({description: e.target.value})}></input>
-            <input type='text' min={200} max={800} placeholder='Weight...' value={this.state.pizza.weight}onChange={(e) => this.setState(prevState => ({
-            pizza: {
-                ...prevState.pizza,
-                weight: e.target.value
-            }}))}></input>
-            <input min={0} type='number' placeholder='Price...' value={this.state.pizza.price} onChange={(e) => this.setState(prevState => ({
-            pizza: {
-                ...prevState.pizza,
-                price: e.target.value
-            }}))}></input>
+            {this.state.errorImageUrl && 
+                <span style={{ color: 'red',fontSize:14 }}>Ошибка при загрузке фото...</span>
+            }
+            <input type='text' placeholder='Title...' value={this.state.title} 
+            // onChange={(e) => this.setState({title: e.target.value})}
+            onChange={(e) => {
+                if (!/\d/.test(e.target.value) || e.target.value.trim() === '') {
+                    this.setState({ title: e.target.value });
+                    if (e.target.value.trim() !== '' && e.target.value.length>=5 &&  e.target.value.length <= 50) {
+                        this.setState({ errorTitle: false });
+                    } else {
+                        this.setState({ errorTitle: true });
+                    }
+                }
+            }}
+            ></input>
+            {this.state.errorTitle && 
+                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
+            }
+            <input type='text' placeholder='Description...' value={this.state.description} 
+            // onChange={(e) => this.setState({description: e.target.value})}
+            onChange={(e) => {
+                if (!/\d/.test(e.target.value) || e.target.value.trim() === '') {
+                    this.setState({ description: e.target.value });
+                    if (e.target.value.trim() !== '' && e.target.value.length>=10 && e.target.value.length <= 50) {
+                        this.setState({ errorDesc: false });
+                    } else {
+                        this.setState({ errorDesc: true });
+                    }
+                }
+            }}
+            ></input>
+            {this.state.errorDesc && 
+                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
+            }
+            <input type='text' min={500} max={2000} placeholder='Weight...' value={this.state.pizza.weight} 
+            // onChange={(e) => this.setState(prevState => ({
+            // pizza: {
+            //     ...prevState.pizza,
+            //     weight: e.target.value
+            // }}))}
+            onChange={(e) => {
+                const input = e.target.value;
+                if (input.trim() === '') {
+                    this.setState({ 
+                        errorWeight: true,
+                        pizza: {
+                            ...this.state.pizza,
+                            weight: input
+                        }
+                    });
+                } else if (/^\d+$/.test(input)) { 
+                    const num = parseInt(input);
+                    if (num < 500 || input.charAt(0) == '0' || num > 2000) {
+                        this.setState({ 
+                            errorWeight: true,
+                            pizza: {
+                                ...this.state.pizza,
+                                weight: input
+                            }
+                        });
+                    } else {
+                        this.setState({ 
+                            errorWeight: false,
+                            pizza: {
+                                ...this.state.pizza,
+                                weight: input
+                            }
+                        });
+                    }
+                }
+            }}
+            ></input>
+            {this.state.errorWeight && 
+                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
+            }
+            <input min={1} type='number' placeholder='Price...' value={this.state.pizza.price} 
+            // onChange={(e) => this.setState(prevState => ({
+            // pizza: {
+            //     ...prevState.pizza,
+            //     price: e.target.value
+            // }}))}
+            onChange={(e) => {
+                const input = e.target.value;
+                if (input.trim() === '') {
+                    this.setState({ 
+                        errorPrice: true,
+                        pizza: {
+                            ...this.state.pizza,
+                            price: input
+                        }
+                    });
+                } else {
+                    const price = parseInt(input);
+                    if (price < 100 || input.charAt(0) == '0' || price > 2000) {
+                        this.setState({ 
+                            errorPrice: true,
+                            pizza: {
+                                ...this.state.pizza,
+                                price: input
+                            }
+                        });
+                    } else {
+                        this.setState({ 
+                            errorPrice: false,
+                            pizza: {
+                                ...this.state.pizza,
+                                price: input
+                            }
+                        });
+                    }
+                }
+            }}
+            ></input>
+            {this.state.errorPrice && 
+                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
+            }
           </div>
-          <div style={{ width: 100, borderRadius: 10, background: 'green' }} className='addToBucket' onClick={() => { this.AddProduct() }}>Add</div>
+          {this.state.errorImageUrl || this.state.errorTitle || this.state.errorDesc || this.state.errorWeight || this.state.errorPrice ? (
+                        <button className='addToBucket' style={{ 
+                            width: 100, 
+                            borderRadius: 10, 
+                            background: 'lightgray', 
+                            color: '#fff',
+                            cursor: 'not-allowed',
+                            fontWeight: 600
+                        }} 
+                        disabled={this.state.errorImageUrl}>
+                            Add
+                        </button>
+                    ) : (
+                        <button className='addToBucket' style={{ 
+                            width: 100, 
+                            borderRadius: 10, 
+                            background: 'green', 
+                            color: '#fff',
+                            cursor: 'pointer',
+                            fontWeight: 600
+                        }} 
+                        onClick={() => { this.AddProduct() }} disabled={this.state.errorImageUrl}>
+                            Add
+                        </button>
+                    )}
+          {/* <div style={{ width: 100, borderRadius: 10, background: 'green' }} className='addToBucket' onClick={() => { this.AddProduct() }}>Add</div> */}
           <div style={{ width: 100, borderRadius: 10, marginRight: '20%' }} className='addToBucket' onClick={() => this.props.isShow()} >Close</div>
         </div>
       </div>
@@ -108,8 +244,14 @@ export default class AddComboProduct extends React.Component {
               ...prevState.pizza,
               isPopular: false
           }}))
+    }
   }
-  }
+  handleImageError(event) {
+    this.setState({errorImageUrl:true});
+    }
+    handleImageLoad(event) {
+        this.setState({errorImageUrl:false});
+    }
   UploadFile(file) {
     const data = new FormData()
     if (file != null) {
@@ -375,27 +517,28 @@ handleCancelEditExcept = () => {
     });
 };
   async AddProduct() {
-    const json =  this.state.pizza;
+   
     // if(this.state.pizza.imageUrl)
     this.setState((prevState) => ({
         pizza: {
             ...prevState.pizza,
             title: this.state.title + '-' + this.state.description,
-            imageUrl: this.state.baseImage
         }
-    }), async()=>{
-        console.log(json);
-        var image = "";
-        if(this.state.pizza.imageUrl.length > 0){
-          image = this.state.baseImage;
-        }
-        else{
-          image = this.state.pizza.imageUrl;
-        }
-        await axios.post(`http://alisa000077-001-site1.htempurl.com/api/Pizza/AddPizza`, json)
+    }),()=>{
+        const json =  this.state.pizza;
+        console.log("JSON: " + json.title);
+        var image = this.state.pizza.imageUrl;
+        // if(this.state.pizza.imageUrl.length > 0){
+        //   image = this.state.baseImage;
+        // }
+        // else{
+        //   image = this.state.pizza.imageUrl;
+        // }
+        axios.post(`http://alisa000077-001-site1.htempurl.com/api/Pizza/AddPizza`, json)
           .then(res => {
             const mas = this.props.dataComboPizzas
-            const id = mas.length+1
+            const id = mas[mas.length-1].id + 1;
+            console.log("ID: " + id);
             this.props.AddProduct(
               id,
               image,
