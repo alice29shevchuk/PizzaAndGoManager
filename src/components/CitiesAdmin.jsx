@@ -250,7 +250,7 @@ export default class CitiesAdmin  extends React.Component {
                     return record;
                 });
             
-                this.setState({ recordsCity: updatedRecords }); 
+                this.setState({ recordsDepartment: updatedRecords }); 
             })
         this.props.getDepartment()
     }

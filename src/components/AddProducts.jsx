@@ -11,11 +11,11 @@ export default class AddProduct extends React.Component {
     this.state = {
         pizza:new Pizza(
           0,
-          "",
+          "https://static-00.iconduck.com/assets.00/pizza-icon-2048x2048-vk14rowe.png", //здесь было пусто
           "",
           0,
           1,
-          0,
+          1, // здесь было 0
           0,
           // this.props.ingredients,
           [],
@@ -26,6 +26,18 @@ export default class AddProduct extends React.Component {
           [],
           true
         ),
+        errorImageUrl:false,
+        errorTitle:true,
+        errorDesc:true,
+        errorWeight:true,
+        errorPrice:true,
+        errorSauce:true,
+        errorRating:true,
+        errorIngredientInput:true,
+        errorIngredientAddName:true,
+        errorIngredientAddPrice:true,
+        errorIngredientExcept:true,
+
         newIngredientName: '', 
         isAddingNewIngredient: false,
         isEditingIngredient:false,
@@ -56,44 +68,176 @@ export default class AddProduct extends React.Component {
         <div>
           <h3>Add Product</h3>
           <div className='add-product'>
-            {this.state.pizza.imageUrl ? (
+            {/* {this.state.pizza.imageUrl ? (
                 <img src={this.state.pizza.imageUrl} alt="photo" />):(<img src={this.state.baseImage} alt="photo" />)
             }
              <input type='text' min={200} max={800} placeholder='Image...' value={this.state.pizza.imageUrl}onChange={(e) => this.setState(prevState => ({
             pizza: {
                 ...prevState.pizza,
                 imageUrl: e.target.value
-            }}))}></input>
-            <input type='text' placeholder='Title...' value={this.state.pizza.title} onChange={(e) => this.setState(prevState => ({
+            }}))}></input> */}
+            <img src={this.state.pizza.imageUrl} alt='combo pizza' onLoad={(e)=>{this.handleImageLoad(e)}} onError={(e)=>{this.handleImageError(e)}}></img>
+            <input type='text' placeholder='Image...' value={this.state.pizza.imageUrl}onChange={(e) => this.setState(prevState => ({
             pizza: {
                 ...prevState.pizza,
-                title: e.target.value,
+                imageUrl: e.target.value
             }}))}></input>
-            <input type='text' min={200} max={800} placeholder='Weight...' value={this.state.pizza.weight}onChange={(e) => this.setState(prevState => ({
-            pizza: {
-                ...prevState.pizza,
-                weight: e.target.value
-            }}))}></input>
-            <input min={0} type='number' placeholder='Price...' value={this.state.pizza.price} onChange={(e) => this.setState(prevState => ({
-            pizza: {
-                ...prevState.pizza,
-                price: e.target.value
-            }}))}></input>
-            <select onChange={(e) => this.SelectCategory(e.target.value)}>
+            {this.state.errorImageUrl && 
+                <span style={{ color: 'red',fontSize:14 }}>Ошибка при загрузке фото...</span>
+            }
+            <input type='text' placeholder='Title...' value={this.state.pizza.title} 
+            // onChange={(e) => this.setState(prevState => ({
+            // pizza: {
+            //     ...prevState.pizza,
+            //     title: e.target.value,
+            // }}))}
+            onChange={(e) => {
+                if (!/\d/.test(e.target.value) || e.target.value.trim() === '') {
+                    this.setState(prevState => ({
+                        pizza: {
+                            ...prevState.pizza,
+                            title: e.target.value,
+                    }}))
+                    if (e.target.value.trim() !== '' && e.target.value.length>=5 &&  e.target.value.length <= 50) {
+                        this.setState({ errorTitle: false });
+                    } else {
+                        this.setState({ errorTitle: true });
+                    }
+                }
+            }}
+            ></input>
+            {this.state.errorTitle && 
+                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле корректно...</span>
+            }
+            <input type='text' min={200} max={800} placeholder='Weight...' value={this.state.pizza.weight} 
+            // onChange={(e) => this.setState(prevState => ({
+            // pizza: {
+            //     ...prevState.pizza,
+            //     weight: e.target.value
+            // }}))}
+            onChange={(e) => {
+                const input = e.target.value;
+                if (input.trim() === '') {
+                    this.setState({ 
+                        errorWeight: true,
+                        pizza: {
+                            ...this.state.pizza,
+                            weight: input
+                        }
+                    });
+                } else if (/^\d+$/.test(input)) { 
+                    const num = parseInt(input);
+                    if (num < 300 || input.charAt(0) == '0' || num > 2000) {
+                        this.setState({ 
+                            errorWeight: true,
+                            pizza: {
+                                ...this.state.pizza,
+                                weight: input
+                            }
+                        });
+                    } else {
+                        this.setState({ 
+                            errorWeight: false,
+                            pizza: {
+                                ...this.state.pizza,
+                                weight: input
+                            }
+                        });
+                    }
+                }
+            }}
+            ></input>
+            {this.state.errorWeight && 
+                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле корректно...</span>
+            }
+            <input min={1} type='number' placeholder='Price...' value={this.state.pizza.price} 
+            // onChange={(e) => this.setState(prevState => ({
+            // pizza: {
+            //     ...prevState.pizza,
+            //     price: e.target.value
+            // }}))}
+            onChange={(e) => {
+                const input = e.target.value;
+                if (input.trim() === '') {
+                    this.setState({ 
+                        errorPrice: true,
+                        pizza: {
+                            ...this.state.pizza,
+                            price: input
+                        }
+                    });
+                } else {
+                    const price = parseInt(input);
+                    if (price < 100 || input.charAt(0) == '0' || price > 2000) {
+                        this.setState({ 
+                            errorPrice: true,
+                            pizza: {
+                                ...this.state.pizza,
+                                price: input
+                            }
+                        });
+                    } else {
+                        this.setState({ 
+                            errorPrice: false,
+                            pizza: {
+                                ...this.state.pizza,
+                                price: input
+                            }
+                        });
+                    }
+                }
+            }}
+            ></input>
+            {this.state.errorPrice && 
+                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле корректно...</span>
+            }
+            <select onChange={(e) => this.SelectCategory(e.target.value)} style={{marginTop:5,marginBottom:5}}>
               {this.props.dataCategory.map((el) => (
                 <option key={el.id} value={el.title} selected={el.id === this.state.pizza.category}>{el.title}</option>
               ))}
             </select>
-            <input type='text' placeholder='Rating...' value={this.state.pizza.rating} onChange={(e) => this.setState(prevState => ({
-            pizza: {
-                ...prevState.pizza,
-                rating: e.target.value
-            }}))}></input>
-            <input type='text' placeholder='Sauce...' value={this.state.pizza.sauce} onChange={(e) => this.setState(prevState => ({
-            pizza: {
-                ...prevState.pizza,
-                sauce: e.target.value
-            }}))}></input>
+            <input type='number' min={1} max={10} placeholder='Rating...' value={this.state.pizza.rating} 
+            // onChange={(e) => this.setState(prevState => ({
+            // pizza: {
+            //     ...prevState.pizza,
+            //     rating: e.target.value
+            // }}))}
+            onChange={(e) => {
+                const rating = parseInt(e.target.value);
+                if (!isNaN(rating) && rating >= 1 && rating <= 10) {
+                    this.setState(prevState => ({
+                        pizza: {
+                            ...prevState.pizza,
+                            rating: rating
+                        }
+                    }));
+                }
+            }}
+            ></input>
+            <input type='text' placeholder='Sauce...' value={this.state.pizza.sauce} 
+            // onChange={(e) => this.setState(prevState => ({
+            // pizza: {
+            //     ...prevState.pizza,
+            //     sauce: e.target.value
+            // }}))}
+            onChange={(e) => {
+                if (!/\d/.test(e.target.value) || e.target.value.trim() === '') {
+                    this.setState(prevState => ({
+                        pizza: {
+                            ...prevState.pizza,
+                            sauce: e.target.value,
+                    }}))
+                    if (e.target.value.trim() !== '' && e.target.value.length>=5 &&  e.target.value.length <= 50) {
+                        this.setState({ errorSauce: false });
+                    } else {
+                        this.setState({ errorSauce: true });
+                    }
+                }
+            }}
+            ></input>
+            {this.state.errorSauce && 
+                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле корректно...</span>
+            }
             <div className='allProductIngredients'>
                 <div className='ingredients-container'>
                                 <div className='ingredients-open-close'>
@@ -120,10 +264,34 @@ export default class AddProduct extends React.Component {
                                     <div>
                                         {this.state.isAddingNewIngredient || this.state.isEditingIngredient ? (
                                         <div className='add-new-ingredient'>
-                                            <input type='text' placeholder='Введите название ингредиента...' value={this.state.newIngredientName} onChange={(e) => this.setState({ newIngredientName: e.target.value })} />
-                                            <button className="buttonSave" onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
+                                            <div>
+                                            <input type='text' placeholder='Введите название ингредиента...' value={this.state.newIngredientName} 
+                                            onChange={(e) => {
+                                                if (!/\d/.test(e.target.value) || e.target.value.trim() === '') {
+                                                    this.setState({ newIngredientName: e.target.value });
+                                                    if (e.target.value.trim() !== '' && e.target.value.length>=5 &&  e.target.value.length <= 50) {
+                                                        this.setState({ errorIngredientInput: false });
+                                                    } else {
+                                                        this.setState({ errorIngredientInput: true });
+                                                    }
+                                                }
+                                            }}
+                                            />
+                                            {this.state.errorIngredientInput && 
+                                                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
+                                            }
+                                            </div>
+                                            {this.state.errorIngredientInput ? 
+                                            (<button className="buttonSave" style={{ background: 'lightgray', color: '#fff',cursor: 'not-allowed'}}  onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient} disabled={this.state.errorIngredientInput}>
                                                 {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
-                                            </button>
+                                            </button>)
+                                            :
+                                            (<button className="buttonSave" style={{ background: 'green', color: '#fff',cursor: 'pointer'}}  onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
+                                                {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
+                                            </button>)}
+                                            {/* <button className="buttonSave" onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
+                                                {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
+                                            </button> */}
                                             <button className="buttonCancel" onClick={this.handleCancelEdit}>Cancel</button>
                                         </div>) : null}
                                     </div>
@@ -158,12 +326,63 @@ export default class AddProduct extends React.Component {
                                     <div>
                                         {this.state.isAddingNewIngredientAdd || this.state.isEditingIngredientAdd ? (
                                         <div className='add-new-ingredient'>
-                                            <input type='text' placeholder='Введите название ингредиента для добавления...' value={this.state.newIngredientAddName} onChange={(e) => this.setState({ newIngredientAddName: e.target.value })} />
-                                            <input type='number' placeholder='Введите цену ингредиента для добавления...' value={this.state.newIngredientAddPrice} onChange={(e) => this.setState({ newIngredientAddPrice: e.target.value })} />
-
-                                            <button className="buttonSave" onClick={this.state.isEditingIngredientAdd ? this.handleSaveEditedIngredientAdd : this.handleSaveNewIngredientAdd}>
+                                            <input type='text' placeholder='Введите название ингредиента для добавления...' value={this.state.newIngredientAddName} 
+                                            // onChange={(e) => this.setState({ newIngredientAddName: e.target.value })} 
+                                            onChange={(e) => {
+                                                if (!/\d/.test(e.target.value) || e.target.value.trim() === '') {
+                                                    this.setState({ newIngredientAddName: e.target.value });                                              
+                                                    if (e.target.value.trim() !== '' && e.target.value.length>=5 &&  e.target.value.length <= 50) {
+                                                    this.setState({ errorIngredientAddName: false });
+                                                    } else {
+                                                        this.setState({ errorIngredientAddName: true });
+                                                    }
+                                                }
+                                            }}
+                                            />
+                                            {this.state.errorIngredientAddName && 
+                                                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
+                                            }
+                                            <div>
+                                            <input min={1} type='number' placeholder='Введите цену ингредиента для добавления...' value={this.state.newIngredientAddPrice} 
+                                            // onChange={(e) => this.setState({ newIngredientAddPrice: e.target.value })} 
+                                            onChange={(e) => {
+                                                const input = e.target.value;
+                                                if (input.trim() === '') {
+                                                    this.setState({ 
+                                                        errorIngredientAddPrice: true,
+                                                        newIngredientAddPrice: e.target.value
+                                                    });
+                                                } else {
+                                                    const price = parseInt(input);
+                                                    if (price < 10 || input.charAt(0) == '0' || price > 2000) {
+                                                        this.setState({ 
+                                                            errorIngredientAddPrice: true,
+                                                            newIngredientAddPrice: e.target.value
+                                                        });
+                                                    } else {
+                                                        this.setState({ 
+                                                            errorIngredientAddPrice: false,
+                                                            newIngredientAddPrice: e.target.value
+                                                        });
+                                                    }
+                                                }
+                                            }}
+                                            />
+                                            {this.state.errorIngredientAddPrice && 
+                                                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
+                                            }
+                                            </div>
+                                            {this.state.errorIngredientAddName ||  this.state.errorIngredientAddPrice ? 
+                                            (<button className="buttonSave" style={{ background: 'lightgray', color: '#fff',cursor: 'not-allowed'}} onClick={this.state.isEditingIngredientAdd ? this.handleSaveEditedIngredientAdd : this.handleSaveNewIngredientAdd} disabled={this.state.errorIngredientAddName || this.state.errorIngredientAddPrice}>
+                                            {this.state.isEditingIngredientAdd ? 'Save Edit' : 'Save New'}
+                                            </button>)
+                                            :
+                                            (<button className="buttonSave" style={{ background: 'green', color: '#fff',cursor: 'pointer'}} onClick={this.state.isEditingIngredientAdd ? this.handleSaveEditedIngredientAdd : this.handleSaveNewIngredientAdd}>
+                                            {this.state.isEditingIngredientAdd ? 'Save Edit' : 'Save New'}
+                                            </button>)}
+                                            {/* <button className="buttonSave" onClick={this.state.isEditingIngredientAdd ? this.handleSaveEditedIngredientAdd : this.handleSaveNewIngredientAdd}>
                                                 {this.state.isEditingIngredientAdd ? 'Save Edit' : 'Save New'}
-                                            </button>
+                                            </button> */}
                                             <button className="buttonCancel" onClick={this.handleCancelEditAdd}>Cancel</button>
                                         </div>) : null}
                                     </div>
@@ -197,11 +416,37 @@ export default class AddProduct extends React.Component {
                                     <div>
                                         {this.state.isAddingNewIngredientExcept || this.state.isEditingIngredientExcept ? (
                                         <div className='add-new-ingredient'>
-                                            <input type='text' placeholder='Введите название ингредиента для исключения...' value={this.state.newIngredientExceptName} onChange={(e) => this.setState({ newIngredientExceptName: e.target.value })} />
+                                            <div>
+                                                <input type='text' placeholder='Введите название ингредиента для исключения...' value={this.state.newIngredientExceptName} 
+                                                // onChange={(e) => this.setState({ newIngredientExceptName: e.target.value })} 
+                                                onChange={(e) => {
+                                                    if (!/\d/.test(e.target.value) || e.target.value.trim() === '') {
+                                                        this.setState({ newIngredientExceptName: e.target.value });                                              
+                                                        if (e.target.value.trim() !== '' && e.target.value.length>=5 &&  e.target.value.length <= 50) {
+                                                        this.setState({ errorIngredientExcept: false });
+                                                        } else {
+                                                            this.setState({ errorIngredientExcept: true });
+                                                        }
+                                                    }
+                                                }}
+                                                />
+                                                {this.state.errorIngredientExcept && 
+                                                    <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
+                                                }
+                                            </div>
 
-                                            <button className="buttonSave" onClick={this.state.isEditingIngredientExcept ? this.handleSaveEditedIngredientExcept : this.handleSaveNewIngredientExcept}>
+                                            {this.state.errorIngredientExcept ? 
+                                            ( <button className="buttonSave" style={{ background: 'lightgray', color: '#fff',cursor: 'not-allowed'}} onClick={this.state.isEditingIngredientExcept ? this.handleSaveEditedIngredientExcept : this.handleSaveNewIngredientExcept} disabled={this.state.errorIngredientExcept}>
+                                            {this.state.isEditingIngredientExcept ? 'Save Edit' : 'Save New'}
+                                            </button>)
+                                            :
+                                            ( <button className="buttonSave" style={{ background: 'green', color: '#fff',cursor: 'pointer'}} onClick={this.state.isEditingIngredientExcept ? this.handleSaveEditedIngredientExcept : this.handleSaveNewIngredientExcept}>
+                                            {this.state.isEditingIngredientExcept ? 'Save Edit' : 'Save New'}
+                                            </button>)}
+
+                                            {/* <button className="buttonSave" onClick={this.state.isEditingIngredientExcept ? this.handleSaveEditedIngredientExcept : this.handleSaveNewIngredientExcept}>
                                                 {this.state.isEditingIngredientExcept ? 'Save Edit' : 'Save New'}
-                                            </button>
+                                            </button> */}
                                             <button className="buttonCancel" onClick={this.handleCancelEditExcept}>Cancel</button>
                                         </div>) : null}
                                     </div>
@@ -214,11 +459,23 @@ export default class AddProduct extends React.Component {
               <option>False</option>
             </select>
           </div>
-          <div style={{ width: 100, borderRadius: 10, background: 'green' }} className='addToBucket' onClick={() => { this.AddProduct() }}>Add</div>
+        {this.state.errorImageUrl || this.state.errorTitle || this.state.errorWeight || this.state.errorPrice || this.state.errorSauce || this.state.errorIngredientInput || this.state.errorIngredientAddName || this.state.errorIngredientAddPrice || this.state.errorIngredientExcept ? 
+        (<button style={{ width: 100, borderRadius: 10 ,background: 'lightgray', color: '#fff',cursor: 'not-allowed' }} className='addToBucket' onClick={() => { this.AddProduct() }} disabled={this.state.errorImageUrl || this.state.errorTitle || this.state.errorWeight || this.state.errorPrice || this.state.errorSauce || this.state.errorIngredientInput || this.state.errorIngredientAddName || this.state.errorIngredientAddPrice || this.state.errorIngredientExcept}>Add</button>
+        )
+        :
+        (<button style={{ width: 100, borderRadius: 10, background: 'green', color: '#fff',cursor: 'pointer' }} className='addToBucket' onClick={() => { this.AddProduct() }}>Add</button>
+        )}
+          {/* <div style={{ width: 100, borderRadius: 10, background: 'green' }} className='addToBucket' onClick={() => { this.AddProduct() }}>Add</div> */}
           <div style={{ width: 100, borderRadius: 10, marginRight: '20%' }} className='addToBucket' onClick={() => this.props.isShow()} >Close</div>
         </div>
       </div>
     )
+  }
+  handleImageError(event) {
+    this.setState({errorImageUrl:true});
+  }
+  handleImageLoad(event) {
+    this.setState({errorImageUrl:false});
   }
   SelectCategory(text) {
     for (const iterator of this.props.dataCategory) {
@@ -515,13 +772,13 @@ handleCancelEditExcept = () => {
   async AddProduct() {
     const json =  this.state.pizza;
     console.log(json);
-    var image = "";
-    if(this.state.pizza.imageUrl.length > 0){
-      image = this.state.baseImage;
-    }
-    else{
-      image = this.state.pizza.imageUrl;
-    }
+    var image = this.state.pizza.imageUrl;
+    // if(this.state.pizza.imageUrl.length > 0){
+    //   image = this.state.baseImage;
+    // }
+    // else{
+    //   image = this.state.pizza.imageUrl;
+    // }
     await axios.post(`http://alisa000077-001-site1.htempurl.com/api/Pizza/AddPizza`, json)
       .then(res => {
         const mas = this.props.dataProduct
