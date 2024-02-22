@@ -51,7 +51,7 @@ export default function AdminPage() {
     getComboPizzas()
   }, [])
   const getCity = () => {
-    axios.get(`http://alisa000077-001-site1.htempurl.com/api/City/GetCityes`)
+    axios.get(`http://alisa000077-001-site1.htempurl.com/api/City/GetCity`)
       .then(res => {
         const rest = res.data;
         setCountCity(rest.length)

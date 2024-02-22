@@ -472,31 +472,20 @@ setPriceIng(){
     }
     return false;
   };
-  // isSauceSelected = (sauceName) => {
-  //   console.log("Sauce: " + sauceName);
-  //   console.log(this.state.order.productsInOrders[this.state.indexForIng]);
-  //   if(sauceName == ""){
-  //     this.setState({sauceChecked:false});
-  //   }
-  //   else{
-  //     for(var i = 0; i < this.state.order.productsInOrders.length; i ++){
-  //       if(this.state.order.productsInOrders[i].selectedSauce != ""){
-  //         this.setState({sauceChecked: true});
-  //       }
-  //     }
-  //   }
-  // };
   isSauceSelected = (sauceName) => {
     console.log("Sauce: " + sauceName);
     console.log(this.state.order.productsInOrders[this.state.indexForIng]);
-    if(sauceName === ""){
-      this.setState({ sauceChecked: false });
-      return;
+    if(sauceName == ""){
+      this.setState({sauceChecked:false});
     }
-    
-    const hasSauce = this.state.order.productsInOrders.some(product => product.selectedSauce === sauceName);
-    this.setState({ sauceChecked: hasSauce });
-};
+    else{
+      for(var i = 0; i < this.state.order.productsInOrders.length; i ++){
+        if(this.state.order.productsInOrders[i].selectedSauce != ""){
+          this.setState({sauceChecked: true});
+        }
+      }
+    }
+  };
 
   handleChangeSauce = (e) => {
     const isChecked = e.target.checked;
@@ -831,7 +820,7 @@ handleEditIngredient = (index) => {
     const editedIngredientCount = this.state.order.productsInOrders[index].count;
     const editedIngredientSauce = this.state.order.productsInOrders[index].selectedSauce;
     const editedIngredientTotalPrice = editedIngredientCount * editedIngredientPrice;
-
+  console.log('editedIngredientPrice = '+editedIngredientPrice);
     this.setState({
         isAddingNewIngredient:false,
         isEditingIngredient: true,
@@ -845,11 +834,14 @@ handleEditIngredient = (index) => {
     }, () => {
       this.setPriceIng();
   });
-console.log('combo len = '+this.state.listCombo.length);
+  console.log('combo len = '+this.state.listCombo.length);
     for(var i=0; i< this.state.listPizza.length;i++){
       if(this.state.listPizza[i].title ==  this.state.order.productsInOrders[index].title){
           this.setState({indexForIng: i});
-          this.isSauceSelected(this.state.order.productsInOrders[i].selectedSauce);
+          console.log('index = '+index);
+          console.log('Title = '+this.state.order.productsInOrders[index].title);
+          console.log('i = '+i);
+          this.isSauceSelected(this.state.order.productsInOrders[index].selectedSauce);
       }
       this.state.listCombo.map((pizza) => {
         const titleCombo = pizza.title.split('-'); 
