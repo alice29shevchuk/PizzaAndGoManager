@@ -55,7 +55,18 @@ export default class EditOrder extends React.Component {
             departments:[],
 
             isPhoneNumberValid:true,
-            sauceChecked: false
+            sauceChecked: false,
+
+            errorImageUrl:false,
+            errorTitle:false,
+            errorWeight:false,
+            errorPrice:false,
+            errorSauce:false,
+            errorRating:false,
+            errorIngredientInput:false,
+            errorIngredientAddName:false,
+            errorIngredientAddPrice:false,
+            errorIngredientExcept:false,
         }
         this.stateProcess = this.stateProcess.bind(this)      
     }
@@ -216,9 +227,32 @@ export default class EditOrder extends React.Component {
                       )}
                           {this.state.isEditingIngredient ? (
                           <div className='add-new-ingredient'>
-                              <input type='text' placeholder='Введите название продукта...' value={this.state.newIngredientName} onChange={(e) => this.setState({ newIngredientName: e.target.value })} />
+                              <input type='text' placeholder='Введите название продукта...' value={this.state.newIngredientName} 
+                              // onChange={(e) => this.setState({ newIngredientName: e.target.value })} 
+                              onChange={(e) => {
+                                if (!/\d/.test(e.target.value) || e.target.value.trim() === '') {
+                                    this.setState({ newIngredientName: e.target.value });
+                                    if (e.target.value.trim() !== '' && e.target.value.length>=5 &&  e.target.value.length <= 50) {
+                                        this.setState({ errorIngredientInput: false });
+                                    } else {
+                                        this.setState({ errorIngredientInput: true });
+                                    }
+                                }
+                            }}
+                              />
+                              {this.state.errorIngredientInput && 
+                                <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
+                              }
                               <input type='number' readOnly={true} placeholder='Введите цену продукта...' value={this.state.newIngredientPrice} onChange={(e) => this.setState({ newIngredientPrice: e.target.value })} />
-                              <input type='number' min={1} placeholder='Введите количество продукта...' value={this.state.newIngredientCount} onChange={(e) => this.updateCount(e.target.value)} />
+                              <input type='number' min={1} max={100} placeholder='Введите количество продукта...' value={this.state.newIngredientCount} 
+                              // onChange={(e) => this.updateCount(e.target.value)} 
+                              onChange={(e) => {
+                                const rating = parseInt(e.target.value);
+                                if (!isNaN(rating) && rating >= 1 && rating <= 100) {
+                                  this.updateCount(e.target.value);
+                                }
+                              }}
+                              />
                               <input type='number' readOnly={true} placeholder='Введите общую стоимость продукта...' value={this.state.newIngredientTotalPrice} onChange={(e) => this.setState({ newIngredientTotalPrice: e.target.value })} />
                               {this.state.indexForIng >= 0 &&
                                 <div>
@@ -251,9 +285,18 @@ export default class EditOrder extends React.Component {
                                   </div>
                                 </div> 
                               }
-                              <button className="buttonSave" onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
+                              {this.state.errorIngredientInput ? 
+                                (<button className="buttonSave" style={{ background: 'lightgray', color: '#fff',cursor: 'not-allowed'}} onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient} disabled={this.state.errorIngredientInput}>
+                                {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
+                                </button>)
+                                :
+                                (<button className="buttonSave" style={{ background: 'green', color: '#fff',cursor: 'pointer'}} onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
+                                {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
+                                </button>)
+                                        }
+                              {/* <button className="buttonSave" onClick={this.state.isEditingIngredient ? this.handleSaveEditedIngredient : this.handleSaveNewIngredient}>
                                   {this.state.isEditingIngredient ? 'Save Edit' : 'Save New'}
-                              </button>
+                              </button> */}
                               <button className="buttonCancel" onClick={this.handleCancelEdit}>Cancel</button>
                           </div>) : null}
                       </div>
@@ -274,10 +317,10 @@ export default class EditOrder extends React.Component {
                   </select>
               )}
           </div>
-          {this.state.isPhoneNumberValid ? (
+          {this.state.isPhoneNumberValid && !this.state.errorIngredientInput ? (
             <button style={{ width: 100, borderRadius: 10, background: 'green' }} className='addToBucket' onClick={()=>this.Editproduct()}>Save</button>
             ) : (
-            <button style={{ width: 100, borderRadius: 10, background: 'red',position:'absolute',right: '20px',bottom: '20px',background: '#ca5252;',width: '100px', height: '35px', textAlign: 'center', lineHeight: '35px', fontWeight: 600, cursor:'not-allowed'}} onClick={this.Editproduct} disabled={!this.state.isPhoneNumberValid}>Save</button>
+            <button style={{ width: 100, borderRadius: 10, background: 'red',position:'absolute',right: '20px',bottom: '20px',background: '#ca5252;',width: '100px', height: '35px', textAlign: 'center', lineHeight: '35px', fontWeight: 600, cursor:'not-allowed'}} onClick={this.Editproduct} disabled={!this.state.isPhoneNumberValid || this.state.errorIngredientInput}>Save</button>
           )}
           <div style={{ width: 100, borderRadius: 10, marginRight: '20%' }} className='addToBucket' onClick={() => this.props.isShow()} >Close</div>
       </div>
@@ -429,20 +472,32 @@ setPriceIng(){
     }
     return false;
   };
+  // isSauceSelected = (sauceName) => {
+  //   console.log("Sauce: " + sauceName);
+  //   console.log(this.state.order.productsInOrders[this.state.indexForIng]);
+  //   if(sauceName == ""){
+  //     this.setState({sauceChecked:false});
+  //   }
+  //   else{
+  //     for(var i = 0; i < this.state.order.productsInOrders.length; i ++){
+  //       if(this.state.order.productsInOrders[i].selectedSauce != ""){
+  //         this.setState({sauceChecked: true});
+  //       }
+  //     }
+  //   }
+  // };
   isSauceSelected = (sauceName) => {
     console.log("Sauce: " + sauceName);
     console.log(this.state.order.productsInOrders[this.state.indexForIng]);
-    if(sauceName == ""){
-      this.setState({sauceChecked:false});
+    if(sauceName === ""){
+      this.setState({ sauceChecked: false });
+      return;
     }
-    else{
-      for(var i = 0; i < this.state.order.productsInOrders.length; i ++){
-        if(this.state.order.productsInOrders[i].selectedSauce != ""){
-          this.setState({sauceChecked: true});
-        }
-      }
-    }
-  };
+    
+    const hasSauce = this.state.order.productsInOrders.some(product => product.selectedSauce === sauceName);
+    this.setState({ sauceChecked: hasSauce });
+};
+
   handleChangeSauce = (e) => {
     const isChecked = e.target.checked;
     console.log(isChecked);

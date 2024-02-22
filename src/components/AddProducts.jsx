@@ -150,7 +150,7 @@ export default class AddProduct extends React.Component {
             {this.state.errorWeight && 
                 <span style={{ color: 'red',fontSize:14 }}>Заполните это поле корректно...</span>
             }
-            <input min={1} type='number' placeholder='Price...' value={this.state.pizza.price} 
+            <input min={100} type='number' placeholder='Price...' value={this.state.pizza.price} 
             // onChange={(e) => this.setState(prevState => ({
             // pizza: {
             //     ...prevState.pizza,
@@ -227,7 +227,7 @@ export default class AddProduct extends React.Component {
                             ...prevState.pizza,
                             sauce: e.target.value,
                     }}))
-                    if (e.target.value.trim() !== '' && e.target.value.length>=5 &&  e.target.value.length <= 50) {
+                    if (e.target.value.trim() !== '' && e.target.value.length>=8 &&  e.target.value.length <= 50) {
                         this.setState({ errorSauce: false });
                     } else {
                         this.setState({ errorSauce: true });
@@ -343,7 +343,7 @@ export default class AddProduct extends React.Component {
                                                 <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
                                             }
                                             <div>
-                                            <input min={1} type='number' placeholder='Введите цену ингредиента для добавления...' value={this.state.newIngredientAddPrice} 
+                                            <input min={10} type='number' placeholder='Введите цену ингредиента для добавления...' value={this.state.newIngredientAddPrice} 
                                             // onChange={(e) => this.setState({ newIngredientAddPrice: e.target.value })} 
                                             onChange={(e) => {
                                                 const input = e.target.value;
@@ -434,7 +434,6 @@ export default class AddProduct extends React.Component {
                                                     <span style={{ color: 'red',fontSize:14 }}>Заполните это поле...</span>
                                                 }
                                             </div>
-
                                             {this.state.errorIngredientExcept ? 
                                             ( <button className="buttonSave" style={{ background: 'lightgray', color: '#fff',cursor: 'not-allowed'}} onClick={this.state.isEditingIngredientExcept ? this.handleSaveEditedIngredientExcept : this.handleSaveNewIngredientExcept} disabled={this.state.errorIngredientExcept}>
                                             {this.state.isEditingIngredientExcept ? 'Save Edit' : 'Save New'}
